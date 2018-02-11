@@ -1,0 +1,6 @@
+rootProject.name = 'imapSample'
+include(':imapSample-global', ':imapSample-core', ':imapSample-gui', ':imapSample-web')
+project(':imapSample-global').projectDir = new File(settingsDir, 'modules/global')
+project(':imapSample-core').projectDir = new File(settingsDir, 'modules/core')
+project(':imapSample-gui').projectDir = new File(settingsDir, 'modules/gui')
+project(':imapSample-web').projectDir = new File(settingsDir, 'modules/web')
