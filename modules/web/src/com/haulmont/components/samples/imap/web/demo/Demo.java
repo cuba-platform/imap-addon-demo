@@ -2,6 +2,7 @@ package com.haulmont.components.samples.imap.web.demo;
 
 import com.haulmont.bali.datastruct.Pair;
 import com.haulmont.components.imap.dto.MailMessageDto;
+import com.haulmont.components.imap.dto.MessageRef;
 import com.haulmont.components.imap.service.ImapService;
 import com.haulmont.components.samples.imap.entity.MailMessage;
 import com.haulmont.cuba.core.global.CommitContext;
@@ -81,7 +82,7 @@ public class Demo extends AbstractWindow {
     public void markAsRead() {
         forEachSelected(pair -> {
             try {
-                ImapService.MessageRef ref = pair.getSecond();
+                MessageRef ref = pair.getSecond();
                 service.markAsRead(ref);
                 MailMessageDto dto = service.fetchMessage(ref);
                 MailMessage mailMessage = pair.getFirst();
@@ -96,7 +97,7 @@ public class Demo extends AbstractWindow {
     public void markAsImportant() {
         forEachSelected(pair -> {
             try {
-                ImapService.MessageRef ref = pair.getSecond();
+                MessageRef ref = pair.getSecond();
                 service.markAsImportant(ref);
                 MailMessageDto dto = service.fetchMessage(ref);
                 MailMessage mailMessage = pair.getFirst();
@@ -108,9 +109,9 @@ public class Demo extends AbstractWindow {
         });
     }
 
-    private void forEachSelected(Consumer<Pair<MailMessage, ImapService.MessageRef>> action) {
+    private void forEachSelected(Consumer<Pair<MailMessage, MessageRef>> action) {
         mailMessageTable.getSelected().forEach(msg -> {
-            ImapService.MessageRef messageRef = new ImapService.MessageRef();
+            MessageRef messageRef = new MessageRef();
             messageRef.setUid(msg.getMessageUid());
             messageRef.setMailBox(msg.getMailBox());
             messageRef.setFolderName(msg.getFolderName());
@@ -156,9 +157,9 @@ public class Demo extends AbstractWindow {
 
             @Override
             public void done(Void result) {
-                if (added) {
+                //if (added) {
                     mailMessageDs.refresh();
-                }
+                //}
             }
 
             @Override
