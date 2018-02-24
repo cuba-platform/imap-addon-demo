@@ -1,7 +1,7 @@
 package com.haulmont.components.samples.imap.core;
 
 import com.haulmont.components.imap.dto.MailMessageDto;
-import com.haulmont.components.imap.dto.MessageRef;
+import com.haulmont.components.imap.entity.ImapMessageRef;
 import com.haulmont.components.imap.entity.MailBox;
 import com.haulmont.components.imap.events.NewEmailEvent;
 import com.haulmont.components.imap.service.ImapService;
@@ -34,7 +34,7 @@ public class NewMessageListener {
 
     private Timer timer;
 
-    private volatile List<MessageRef> messageRefs = new ArrayList<>();
+    private volatile List<ImapMessageRef> messageRefs = new ArrayList<>();
 
     @EventListener
     public void handleNewEvent(NewEmailEvent event) {
@@ -52,11 +52,7 @@ public class NewMessageListener {
                     timer.cancel();
                 }
                 synchronized (messageRefs) {
-                    MessageRef ref = new MessageRef();
-                    ref.setMailBox(event.getMailBox());
-                    ref.setFolderName(event.getFolderName());
-                    ref.setUid(event.getMessageId());
-                    messageRefs.add(ref);
+                    messageRefs.add(event.getMessageRef());
                     timer = new Timer();
                     if (messageRefs.size() > 20) {
                         timer.schedule(flushTask(), 0);

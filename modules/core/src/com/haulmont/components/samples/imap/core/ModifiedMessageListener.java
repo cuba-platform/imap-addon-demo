@@ -1,6 +1,6 @@
 package com.haulmont.components.samples.imap.core;
 
-import com.haulmont.components.imap.dto.MessageRef;
+import com.haulmont.components.imap.entity.ImapMessageRef;
 import com.haulmont.components.imap.events.*;
 import com.haulmont.components.imap.service.ImapService;
 import com.haulmont.components.samples.imap.entity.MailMessage;
@@ -48,7 +48,7 @@ public class ModifiedMessageListener {
     @EventListener
     public void handleEvent(EmailFlagChangedEvent event) {
         log.info("handle event :{}", event);
-        MessageRef messageRef = event.getMessageRef();
+        ImapMessageRef messageRef = event.getMessageRef();
         authentication.begin();
         try (Transaction tx = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
@@ -56,15 +56,15 @@ public class ModifiedMessageListener {
                     "select m from imapsample$MailMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId",
                     MailMessage.class
             )
-                    .setParameter("uid", messageRef.getUid())
-                    .setParameter("mailBoxId", messageRef.getMailBox())
+                    .setParameter("uid", messageRef.getMsgUid())
+                    .setParameter("mailBoxId", messageRef.getFolder().getMailBox())
                     .getFirstResult();
 
             if (msg == null) {
                 return;
             }
 
-            MailMessage.fillMessage(msg, service.fetchMessage(messageRef), messageRef::getMailBox);
+            MailMessage.fillMessage(msg, service.fetchMessage(messageRef), () -> messageRef.getFolder().getMailBox());
 
             em.persist(msg);
             tx.commit();

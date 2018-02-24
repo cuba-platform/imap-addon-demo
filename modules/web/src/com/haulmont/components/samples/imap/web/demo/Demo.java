@@ -2,7 +2,8 @@ package com.haulmont.components.samples.imap.web.demo;
 
 import com.haulmont.bali.datastruct.Pair;
 import com.haulmont.components.imap.dto.MailMessageDto;
-import com.haulmont.components.imap.dto.MessageRef;
+import com.haulmont.components.imap.entity.ImapMessageRef;
+import com.haulmont.components.imap.entity.MailFolder;
 import com.haulmont.components.imap.service.ImapService;
 import com.haulmont.components.samples.imap.entity.MailMessage;
 import com.haulmont.cuba.core.global.CommitContext;
@@ -10,7 +11,6 @@ import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.LoadContext;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.cuba.gui.components.AbstractWindow;
-import com.haulmont.cuba.gui.components.Component;
 import com.haulmont.cuba.gui.components.Table;
 import com.haulmont.cuba.gui.components.Timer;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
@@ -68,7 +68,7 @@ public class Demo extends AbstractWindow {
         taskHandler.execute();
     }
 
-    public void deleteMessage(Component component) {
+    public void deleteMessage() {
         forEachSelected(pair -> {
             try {
                 service.deleteMessage(pair.getSecond());
@@ -82,7 +82,7 @@ public class Demo extends AbstractWindow {
     public void markAsRead() {
         forEachSelected(pair -> {
             try {
-                MessageRef ref = pair.getSecond();
+                ImapMessageRef ref = pair.getSecond();
                 service.markAsRead(ref);
                 MailMessageDto dto = service.fetchMessage(ref);
                 MailMessage mailMessage = pair.getFirst();
@@ -97,7 +97,7 @@ public class Demo extends AbstractWindow {
     public void markAsImportant() {
         forEachSelected(pair -> {
             try {
-                MessageRef ref = pair.getSecond();
+                ImapMessageRef ref = pair.getSecond();
                 service.markAsImportant(ref);
                 MailMessageDto dto = service.fetchMessage(ref);
                 MailMessage mailMessage = pair.getFirst();
@@ -109,12 +109,15 @@ public class Demo extends AbstractWindow {
         });
     }
 
-    private void forEachSelected(Consumer<Pair<MailMessage, MessageRef>> action) {
+    @SuppressWarnings("IncorrectCreateEntity")
+    private void forEachSelected(Consumer<Pair<MailMessage, ImapMessageRef>> action) {
         mailMessageTable.getSelected().forEach(msg -> {
-            MessageRef messageRef = new MessageRef();
-            messageRef.setUid(msg.getMessageUid());
-            messageRef.setMailBox(msg.getMailBox());
-            messageRef.setFolderName(msg.getFolderName());
+            ImapMessageRef messageRef = new ImapMessageRef();
+            messageRef.setMsgUid(msg.getMessageUid());
+            MailFolder folder = new MailFolder();
+            folder.setMailBox(msg.getMailBox());
+            folder.setName(msg.getFolderName());
+            messageRef.setFolder(folder);
             action.accept(new Pair<>(msg, messageRef));
         });
         if (!mailMessageTable.getSelected().isEmpty()) {
@@ -126,14 +129,11 @@ public class Demo extends AbstractWindow {
         UIAccessor uiAccessor = backgroundWorker.getUIAccessor();
 
         return new BackgroundTask<Integer, Void>(10, this) {
-            private boolean added = false;
-
             @Override
             public Void run(TaskLifeCycle<Integer> taskLifeCycle) {
                 MailMessage newMessage = dm.load(LoadContext.create(MailMessage.class).setQuery(
                         LoadContext.createQuery("select m from imapsample$MailMessage m where m.seen is null or m.seen = false").setMaxResults(1))
                         .setView("mailMessage-full"));
-                added = newMessage != null;
                 if (newMessage != null) {
                     newMessage.setSeen(true);
                     newMessage.setSeenTime(timeSource.currentTimestamp());
@@ -157,9 +157,7 @@ public class Demo extends AbstractWindow {
 
             @Override
             public void done(Void result) {
-                //if (added) {
-                    mailMessageDs.refresh();
-                //}
+                mailMessageDs.refresh();
             }
 
             @Override
