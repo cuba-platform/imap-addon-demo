@@ -44,7 +44,7 @@ public class NewMessageListener {
                     "select m from imapsample$MailMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId"
             )
                     .setParameter("uid", event.getMessageId())
-                    .setParameter("mailBoxId", event.getMailBox())
+                    .setParameter("mailBoxId", event.getMailBox()) //todo: here mailbox is not initialized, should be set into folder int scheduler
                     .getResultList()
                     .size();
             if (sameUids == 0) {
@@ -83,11 +83,11 @@ public class NewMessageListener {
         synchronized (messageRefs) {
             try {
                 dtos = service.fetchMessages(messageRefs);
-                messageRefs.clear();
-            } catch (MessagingException e) {
+            } catch (Exception e) {
                 throw new RuntimeException("Can't handle new message event", e);
+            } finally {
+                messageRefs.clear();
             }
-
         }
         authentication.begin();
         try (Transaction tx = persistence.createTransaction()) {
