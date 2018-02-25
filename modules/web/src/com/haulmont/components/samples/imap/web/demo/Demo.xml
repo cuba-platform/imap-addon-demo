@@ -16,12 +16,22 @@
 
 </dsContext>
 <layout spacing="true">
-
+    <hbox caption="set custom flag" height="AUTO">
+        <textField id="flagNameField" />
+        <button caption="set flag" invoke="setFlag"/>
+        <button caption="unset flag" invoke="unsetFlag"/>
+    </hbox>
+    <hbox caption="move to folder" height="AUTO">
+        <textField id="folderNameField" />
+        <button caption="move to folder" invoke="moveToFolder"/>
+    </hbox>
     <table id="mailMessageTable" width="100%" height="100%">
         <actions>
             <action id="deleteMessageAction" caption="msg://deleteCaption" invoke="deleteMessage"/>
             <action id="markAsReadAction" caption="msg://markAsReadCaption" invoke="markAsRead"/>
             <action id="markAsImportantAction" caption="msg://markAsImportantAction" invoke="markAsImportant"/>
+            <action id="showBodyAction" caption="Show body" invoke="showBody"/>
+            <action id="showAttachmentsAction" caption="Show attachments" invoke="showAttachments"/>
         </actions>
         <columns>
             <column id="subject"/>
@@ -37,6 +47,8 @@
             <button action="mailMessageTable.deleteMessageAction"/>
             <button action="mailMessageTable.markAsReadAction"/>
             <button action="mailMessageTable.markAsImportantAction"/>
+            <button action="mailMessageTable.showBodyAction"/>
+            <button action="mailMessageTable.showAttachmentsAction"/>
         </buttonsPanel>
         <rowsCount/>
     </table>

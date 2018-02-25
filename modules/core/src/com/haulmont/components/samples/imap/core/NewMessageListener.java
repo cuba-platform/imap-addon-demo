@@ -79,7 +79,7 @@ public class NewMessageListener {
     }
 
     private void flush() {
-        List<MailMessageDto> dtos;
+        Collection<MailMessageDto> dtos;
         synchronized (messageRefs) {
             try {
                 dtos = service.fetchMessages(messageRefs);

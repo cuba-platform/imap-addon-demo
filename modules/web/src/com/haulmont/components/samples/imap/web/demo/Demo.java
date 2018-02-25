@@ -6,12 +6,14 @@ import com.haulmont.components.imap.entity.ImapMessageRef;
 import com.haulmont.components.imap.entity.MailFolder;
 import com.haulmont.components.imap.service.ImapService;
 import com.haulmont.components.samples.imap.entity.MailMessage;
+import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.global.CommitContext;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.LoadContext;
 import com.haulmont.cuba.core.global.TimeSource;
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.components.Table;
+import com.haulmont.cuba.gui.components.TextField;
 import com.haulmont.cuba.gui.components.Timer;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.executors.*;
@@ -19,6 +21,7 @@ import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -47,6 +50,12 @@ public class Demo extends AbstractWindow {
     @Inject
     private Table<MailMessage> mailMessageTable;
 
+    @Inject
+    private TextField flagNameField;
+
+    @Inject
+    private TextField folderNameField;
+
     @Override
     public void init(Map<String, Object> params) {
         showNewMessage();
@@ -72,7 +81,6 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 service.deleteMessage(pair.getSecond());
-                dm.remove(pair.getFirst());
             } catch (MessagingException e) {
                 throw new RuntimeException("delete error", e);
             }
@@ -83,11 +91,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                service.markAsRead(ref);
-                MailMessageDto dto = service.fetchMessage(ref);
-                MailMessage mailMessage = pair.getFirst();
-                MailMessage.fillMessage(mailMessage, dto, mailMessage::getMailBox);
-                dm.commit(mailMessage);
+                service.setFlag(ref, ImapService.Flag.SEEN, true);
             } catch (MessagingException e) {
                 throw new RuntimeException("markAsRead error", e);
             }
@@ -98,15 +102,99 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                service.markAsImportant(ref);
-                MailMessageDto dto = service.fetchMessage(ref);
-                MailMessage mailMessage = pair.getFirst();
-                MailMessage.fillMessage(mailMessage, dto, mailMessage::getMailBox);
-                dm.commit(mailMessage);
+                service.setFlag(ref, ImapService.Flag.IMPORTANT, true);
             } catch (MessagingException e) {
                 throw new RuntimeException("markAsImportant error", e);
             }
         });
+    }
+
+    public void setFlag() {
+        String flagName = flagNameField.getRawValue();
+        if (flagName == null) {
+            return;
+        }
+        forEachSelected(pair -> {
+            try {
+                ImapMessageRef ref = pair.getSecond();
+                service.setFlag(ref, new ImapService.Flag(flagName), true);
+            } catch (MessagingException e) {
+                throw new RuntimeException("set flag " + flagName + " error", e);
+            }
+        });
+    }
+
+    public void unsetFlag() {
+        String flagName = flagNameField.getRawValue();
+        if (flagName == null) {
+            return;
+        }
+        forEachSelected(pair -> {
+            try {
+                ImapMessageRef ref = pair.getSecond();
+                service.setFlag(ref, new ImapService.Flag(flagName), false);
+            } catch (MessagingException e) {
+                throw new RuntimeException("unset flag " + flagName + " error", e);
+            }
+        });
+    }
+
+    public void moveToFolder() {
+        String folderName = folderNameField.getRawValue();
+        if (folderName == null) {
+            return;
+        }
+        forEachSelected(pair -> {
+            try {
+                ImapMessageRef ref = pair.getSecond();
+                service.moveMessage(ref, folderName);
+            } catch (MessagingException e) {
+                throw new RuntimeException("move to folder " + folderName + " error", e);
+            }
+        });
+
+    }
+
+    public void showBody() {
+        List<String> body = new ArrayList<>();
+
+        final boolean[] isHtml = {false};
+
+        forEachSelected(pair -> {
+            try {
+                ImapMessageRef ref = pair.getSecond();
+                MailMessageDto dto = service.fetchMessage(ref);
+                isHtml[0] |= Boolean.TRUE.equals(dto.getHtml());
+                body.add(dto.getBody());
+            } catch (MessagingException e) {
+                throw new RuntimeException("fetch body error", e);
+            }
+        });
+
+        showNotification(
+                "Body of selected",
+                body.toString(),
+                isHtml[0] ? NotificationType.WARNING_HTML : NotificationType.WARNING
+        );
+    }
+
+    public void showAttachments() {
+        List<FileDescriptor> attachments = new ArrayList<>();
+
+        forEachSelected(pair -> {
+            try {
+                ImapMessageRef ref = pair.getSecond();
+                attachments.addAll(service.fetchAttachments(ref));
+            } catch (MessagingException e) {
+                throw new RuntimeException("fetch attachments error", e);
+            }
+        });
+
+        showNotification(
+                "Attachments of selected",
+                attachments.toString(),
+                NotificationType.WARNING
+        );
     }
 
     @SuppressWarnings("IncorrectCreateEntity")
