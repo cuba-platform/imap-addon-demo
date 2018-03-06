@@ -4,7 +4,7 @@ import com.haulmont.bali.datastruct.Pair;
 import com.haulmont.components.imap.dto.MailMessageDto;
 import com.haulmont.components.imap.entity.ImapMessageRef;
 import com.haulmont.components.imap.entity.MailFolder;
-import com.haulmont.components.imap.service.ImapService;
+import com.haulmont.components.imap.service.ImapAPIService;
 import com.haulmont.components.samples.imap.entity.MailMessage;
 import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.global.CommitContext;
@@ -30,7 +30,7 @@ import java.util.function.Consumer;
 public class Demo extends AbstractWindow {
 
     @Inject
-    private ImapService service;
+    private ImapAPIService imapAPI;
 
     @Inject
     private BackgroundWorker backgroundWorker;
@@ -80,7 +80,7 @@ public class Demo extends AbstractWindow {
     public void deleteMessage() {
         forEachSelected(pair -> {
             try {
-                service.deleteMessage(pair.getSecond());
+                imapAPI.deleteMessage(pair.getSecond());
             } catch (MessagingException e) {
                 throw new RuntimeException("delete error", e);
             }
@@ -91,7 +91,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                service.setFlag(ref, ImapService.Flag.SEEN, true);
+                imapAPI.setFlag(ref, ImapAPIService.Flag.SEEN, true);
             } catch (MessagingException e) {
                 throw new RuntimeException("markAsRead error", e);
             }
@@ -102,7 +102,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                service.setFlag(ref, ImapService.Flag.IMPORTANT, true);
+                imapAPI.setFlag(ref, ImapAPIService.Flag.IMPORTANT, true);
             } catch (MessagingException e) {
                 throw new RuntimeException("markAsImportant error", e);
             }
@@ -117,7 +117,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                service.setFlag(ref, new ImapService.Flag(flagName), true);
+                imapAPI.setFlag(ref, new ImapAPIService.Flag(flagName), true);
             } catch (MessagingException e) {
                 throw new RuntimeException("set flag " + flagName + " error", e);
             }
@@ -132,7 +132,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                service.setFlag(ref, new ImapService.Flag(flagName), false);
+                imapAPI.setFlag(ref, new ImapAPIService.Flag(flagName), false);
             } catch (MessagingException e) {
                 throw new RuntimeException("unset flag " + flagName + " error", e);
             }
@@ -147,7 +147,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                service.moveMessage(ref, folderName);
+                imapAPI.moveMessage(ref, folderName);
             } catch (MessagingException e) {
                 throw new RuntimeException("move to folder " + folderName + " error", e);
             }
@@ -163,7 +163,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                MailMessageDto dto = service.fetchMessage(ref);
+                MailMessageDto dto = imapAPI.fetchMessage(ref);
                 isHtml[0] |= Boolean.TRUE.equals(dto.getHtml());
                 body.add(dto.getBody());
             } catch (MessagingException e) {
@@ -184,7 +184,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                attachments.addAll(service.fetchAttachments(ref));
+                attachments.addAll(imapAPI.fetchAttachments(ref));
             } catch (MessagingException e) {
                 throw new RuntimeException("fetch attachments error", e);
             }

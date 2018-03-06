@@ -1,7 +1,7 @@
-package com.haulmont.components.samples.imap.core;
+package com.haulmont.components.samples.imap.service;
 
 import com.haulmont.components.imap.entity.ImapMessageRef;
-import com.haulmont.components.imap.events.*;
+import com.haulmont.components.imap.events.EmailFlagChangedEvent;
 import com.haulmont.components.imap.service.ImapAPIService;
 import com.haulmont.components.samples.imap.entity.MailMessage;
 import com.haulmont.cuba.core.EntityManager;
@@ -10,15 +10,14 @@ import com.haulmont.cuba.core.Transaction;
 import com.haulmont.cuba.security.app.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
 
-@Component
-public class ModifiedMessageListener {
-
-    private final static Logger log = LoggerFactory.getLogger(ModifiedMessageListener.class);
+@Service(ModifiedMessageService.NAME)
+public class ModifiedMessageServiceBean implements ModifiedMessageService {
+    private final static Logger log = LoggerFactory.getLogger(ModifiedMessageServiceBean.class);
 
     @Inject
     private Persistence persistence;
@@ -29,22 +28,6 @@ public class ModifiedMessageListener {
     @Inject
     private ImapAPIService imapAPI;
 
-    /*@EventListener
-    public void handEmailMoved(EmailMovedEvent event) {
-        log.info("moved:{}", event);
-    }
-
-    @EventListener
-    public void handleEmailAnswered(EmailAnsweredEvent event) {
-        log.info("answered:{}", event);
-    }
-
-    @EventListener
-    public void handleEmailSeen(EmailSeenEvent event) {
-        log.info("seen:{}", event);
-    }*/
-
-//    @EventListener
     public void handleEvent(EmailFlagChangedEvent event) {
         log.info("handle event :{}", event);
         ImapMessageRef messageRef = event.getMessageRef();

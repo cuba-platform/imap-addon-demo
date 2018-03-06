@@ -4,7 +4,7 @@ import com.haulmont.components.imap.dto.MailMessageDto;
 import com.haulmont.components.imap.entity.ImapMessageRef;
 import com.haulmont.components.imap.entity.MailBox;
 import com.haulmont.components.imap.events.NewEmailEvent;
-import com.haulmont.components.imap.service.ImapService;
+import com.haulmont.components.imap.service.ImapAPIService;
 import com.haulmont.components.samples.imap.entity.MailMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
@@ -15,7 +15,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 import java.util.*;
 
 @Component
@@ -30,7 +29,7 @@ public class NewMessageListener {
     private Persistence persistence;
 
     @Inject
-    private ImapService service;
+    private ImapAPIService imapAPI;
 
     private Timer timer;
 
@@ -82,7 +81,7 @@ public class NewMessageListener {
         Collection<MailMessageDto> dtos;
         synchronized (messageRefs) {
             try {
-                dtos = service.fetchMessages(messageRefs);
+                dtos = imapAPI.fetchMessages(messageRefs);
             } catch (Exception e) {
                 throw new RuntimeException("Can't handle new message event", e);
             } finally {
