@@ -81,6 +81,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 imapAPI.deleteMessage(pair.getSecond());
+                dm.remove(pair.getFirst());
             } catch (MessagingException e) {
                 throw new RuntimeException("delete error", e);
             }
@@ -92,6 +93,7 @@ public class Demo extends AbstractWindow {
             try {
                 ImapMessageRef ref = pair.getSecond();
                 imapAPI.setFlag(ref, ImapAPIService.Flag.SEEN, true);
+                updateMessage(pair, ref);
             } catch (MessagingException e) {
                 throw new RuntimeException("markAsRead error", e);
             }
@@ -103,6 +105,7 @@ public class Demo extends AbstractWindow {
             try {
                 ImapMessageRef ref = pair.getSecond();
                 imapAPI.setFlag(ref, ImapAPIService.Flag.IMPORTANT, true);
+                updateMessage(pair, ref);
             } catch (MessagingException e) {
                 throw new RuntimeException("markAsImportant error", e);
             }
@@ -118,6 +121,7 @@ public class Demo extends AbstractWindow {
             try {
                 ImapMessageRef ref = pair.getSecond();
                 imapAPI.setFlag(ref, new ImapAPIService.Flag(flagName), true);
+                updateMessage(pair, ref);
             } catch (MessagingException e) {
                 throw new RuntimeException("set flag " + flagName + " error", e);
             }
@@ -133,10 +137,18 @@ public class Demo extends AbstractWindow {
             try {
                 ImapMessageRef ref = pair.getSecond();
                 imapAPI.setFlag(ref, new ImapAPIService.Flag(flagName), false);
+                updateMessage(pair, ref);
             } catch (MessagingException e) {
                 throw new RuntimeException("unset flag " + flagName + " error", e);
             }
         });
+    }
+
+    private void updateMessage(Pair<MailMessage, ImapMessageRef> pair, ImapMessageRef ref) throws MessagingException {
+        MailMessageDto dto = imapAPI.fetchMessage(ref);
+        MailMessage mailMessage = pair.getFirst();
+        MailMessage.fillMessage(mailMessage, dto, mailMessage::getMailBox);
+        dm.commit(mailMessage);
     }
 
     public void moveToFolder() {
