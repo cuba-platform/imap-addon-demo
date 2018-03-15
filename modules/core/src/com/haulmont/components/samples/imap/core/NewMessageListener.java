@@ -98,7 +98,7 @@ public class NewMessageListener {
                     ImapMailBox mailBox = mailBoxes.get(dto.getMailBoxId());
                     if (mailBox == null) {
                         mailBox = em.createQuery(
-                                "select mb from mailcomponent$ImapMailBox mb where mb.id = :mailBoxId",
+                                "select mb from imapcomponent$ImapMailBox mb where mb.id = :mailBoxId",
                                 ImapMailBox.class
                         ).setParameter("mailBoxId", dto.getMailBoxId()).getFirstResult();
                         if (mailBox == null) {
