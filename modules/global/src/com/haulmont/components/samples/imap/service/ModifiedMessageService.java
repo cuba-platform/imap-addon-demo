@@ -1,10 +1,10 @@
 package com.haulmont.components.samples.imap.service;
 
 
-import com.haulmont.components.imap.events.EmailFlagChangedEvent;
+import com.haulmont.components.imap.events.EmailFlagChangedImapEvent;
 
 public interface ModifiedMessageService {
     String NAME = "imapsample_ModifiedMessageService";
 
-    void handleEvent(EmailFlagChangedEvent event);
+    void handleEvent(EmailFlagChangedImapEvent event);
 }

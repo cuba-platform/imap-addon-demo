@@ -3,6 +3,6 @@
              version="2.0">
     <persistence-unit name="imap-sample"
                       transaction-type="RESOURCE_LOCAL">
-        <class>com.haulmont.components.samples.imap.entity.MailMessage</class>
+        <class>com.haulmont.components.samples.imap.entity.ImapMessage</class>
     </persistence-unit>
 </persistence>

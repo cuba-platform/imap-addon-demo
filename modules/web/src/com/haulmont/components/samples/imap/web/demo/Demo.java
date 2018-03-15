@@ -1,11 +1,12 @@
 package com.haulmont.components.samples.imap.web.demo;
 
 import com.haulmont.bali.datastruct.Pair;
-import com.haulmont.components.imap.dto.MailMessageDto;
+import com.haulmont.components.imap.dto.ImapMessageDto;
 import com.haulmont.components.imap.entity.ImapMessageRef;
-import com.haulmont.components.imap.entity.MailFolder;
+import com.haulmont.components.imap.entity.ImapFolder;
 import com.haulmont.components.imap.service.ImapAPIService;
-import com.haulmont.components.samples.imap.entity.MailMessage;
+import com.haulmont.components.imap.service.ImapFlag;
+import com.haulmont.components.samples.imap.entity.ImapMessage;
 import com.haulmont.cuba.core.entity.FileDescriptor;
 import com.haulmont.cuba.core.global.CommitContext;
 import com.haulmont.cuba.core.global.DataManager;
@@ -42,13 +43,13 @@ public class Demo extends AbstractWindow {
     private ComponentsFactory componentsFactory;
 
     @Inject
-    private CollectionDatasource<MailMessage, UUID> mailMessageDs;
+    private CollectionDatasource<ImapMessage, UUID> imapMessageDs;
 
     @Inject
     private TimeSource timeSource;
 
     @Inject
-    private Table<MailMessage> mailMessageTable;
+    private Table<ImapMessage> imapMessageTable;
 
     @Inject
     private TextField flagNameField;
@@ -92,7 +93,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                imapAPI.setFlag(ref, ImapAPIService.Flag.SEEN, true);
+                imapAPI.setFlag(ref, ImapFlag.SEEN, true);
                 updateMessage(pair, ref);
             } catch (MessagingException e) {
                 throw new RuntimeException("markAsRead error", e);
@@ -104,7 +105,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                imapAPI.setFlag(ref, ImapAPIService.Flag.IMPORTANT, true);
+                imapAPI.setFlag(ref, ImapFlag.IMPORTANT, true);
                 updateMessage(pair, ref);
             } catch (MessagingException e) {
                 throw new RuntimeException("markAsImportant error", e);
@@ -120,7 +121,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                imapAPI.setFlag(ref, new ImapAPIService.Flag(flagName), true);
+                imapAPI.setFlag(ref, new ImapFlag(flagName), true);
                 updateMessage(pair, ref);
             } catch (MessagingException e) {
                 throw new RuntimeException("set flag " + flagName + " error", e);
@@ -136,7 +137,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                imapAPI.setFlag(ref, new ImapAPIService.Flag(flagName), false);
+                imapAPI.setFlag(ref, new ImapFlag(flagName), false);
                 updateMessage(pair, ref);
             } catch (MessagingException e) {
                 throw new RuntimeException("unset flag " + flagName + " error", e);
@@ -144,11 +145,11 @@ public class Demo extends AbstractWindow {
         });
     }
 
-    private void updateMessage(Pair<MailMessage, ImapMessageRef> pair, ImapMessageRef ref) throws MessagingException {
-        MailMessageDto dto = imapAPI.fetchMessage(ref);
-        MailMessage mailMessage = pair.getFirst();
-        MailMessage.fillMessage(mailMessage, dto, mailMessage::getMailBox);
-        dm.commit(mailMessage);
+    private void updateMessage(Pair<ImapMessage, ImapMessageRef> pair, ImapMessageRef ref) throws MessagingException {
+        ImapMessageDto dto = imapAPI.fetchMessage(ref);
+        ImapMessage imapMessage = pair.getFirst();
+        ImapMessage.fillMessage(imapMessage, dto, imapMessage::getMailBox);
+        dm.commit(imapMessage);
     }
 
     public void moveToFolder() {
@@ -175,7 +176,7 @@ public class Demo extends AbstractWindow {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                MailMessageDto dto = imapAPI.fetchMessage(ref);
+                ImapMessageDto dto = imapAPI.fetchMessage(ref);
                 isHtml[0] |= Boolean.TRUE.equals(dto.getHtml());
                 body.add(dto.getBody());
             } catch (MessagingException e) {
@@ -210,18 +211,18 @@ public class Demo extends AbstractWindow {
     }
 
     @SuppressWarnings("IncorrectCreateEntity")
-    private void forEachSelected(Consumer<Pair<MailMessage, ImapMessageRef>> action) {
-        mailMessageTable.getSelected().forEach(msg -> {
+    private void forEachSelected(Consumer<Pair<ImapMessage, ImapMessageRef>> action) {
+        imapMessageTable.getSelected().forEach(msg -> {
             ImapMessageRef messageRef = new ImapMessageRef();
             messageRef.setMsgUid(msg.getMessageUid());
-            MailFolder folder = new MailFolder();
+            ImapFolder folder = new ImapFolder();
             folder.setMailBox(msg.getMailBox());
             folder.setName(msg.getFolderName());
             messageRef.setFolder(folder);
             action.accept(new Pair<>(msg, messageRef));
         });
-        if (!mailMessageTable.getSelected().isEmpty()) {
-            mailMessageDs.refresh();
+        if (!imapMessageTable.getSelected().isEmpty()) {
+            imapMessageDs.refresh();
         }
     }
 
@@ -231,9 +232,9 @@ public class Demo extends AbstractWindow {
         return new BackgroundTask<Integer, Void>(10, this) {
             @Override
             public Void run(TaskLifeCycle<Integer> taskLifeCycle) {
-                MailMessage newMessage = dm.load(LoadContext.create(MailMessage.class).setQuery(
-                        LoadContext.createQuery("select m from imapsample$MailMessage m where m.seen is null or m.seen = false").setMaxResults(1))
-                        .setView("mailMessage-full"));
+                ImapMessage newMessage = dm.load(LoadContext.create(ImapMessage.class).setQuery(
+                        LoadContext.createQuery("select m from imapsample$ImapMessage m where m.seen is null or m.seen = false").setMaxResults(1))
+                        .setView("imapMessage-full"));
                 if (newMessage != null) {
                     newMessage.setSeen(true);
                     newMessage.setSeenTime(timeSource.currentTimestamp());
@@ -257,7 +258,7 @@ public class Demo extends AbstractWindow {
 
             @Override
             public void done(Void result) {
-                mailMessageDs.refresh();
+                imapMessageDs.refresh();
             }
 
             @Override

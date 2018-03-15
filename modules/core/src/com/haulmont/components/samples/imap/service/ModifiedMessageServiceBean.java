@@ -1,9 +1,9 @@
 package com.haulmont.components.samples.imap.service;
 
 import com.haulmont.components.imap.entity.ImapMessageRef;
-import com.haulmont.components.imap.events.EmailFlagChangedEvent;
+import com.haulmont.components.imap.events.EmailFlagChangedImapEvent;
 import com.haulmont.components.imap.service.ImapAPIService;
-import com.haulmont.components.samples.imap.entity.MailMessage;
+import com.haulmont.components.samples.imap.entity.ImapMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;
@@ -28,15 +28,15 @@ public class ModifiedMessageServiceBean implements ModifiedMessageService {
     @Inject
     private ImapAPIService imapAPI;
 
-    public void handleEvent(EmailFlagChangedEvent event) {
+    public void handleEvent(EmailFlagChangedImapEvent event) {
         log.info("handle event :{}", event);
         ImapMessageRef messageRef = event.getMessageRef();
         authentication.begin();
         try (Transaction tx = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
-            MailMessage msg = em.createQuery(
-                    "select m from imapsample$MailMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId",
-                    MailMessage.class
+            ImapMessage msg = em.createQuery(
+                    "select m from imapsample$ImapMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId",
+                    ImapMessage.class
             )
                     .setParameter("uid", messageRef.getMsgUid())
                     .setParameter("mailBoxId", messageRef.getFolder().getMailBox())
@@ -46,7 +46,7 @@ public class ModifiedMessageServiceBean implements ModifiedMessageService {
                 return;
             }
 
-            MailMessage.fillMessage(msg, imapAPI.fetchMessage(messageRef), () -> messageRef.getFolder().getMailBox());
+            ImapMessage.fillMessage(msg, imapAPI.fetchMessage(messageRef), () -> messageRef.getFolder().getMailBox());
 
             em.persist(msg);
             tx.commit();

@@ -1,11 +1,11 @@
 package com.haulmont.components.samples.imap.core;
 
-import com.haulmont.components.imap.dto.MailMessageDto;
+import com.haulmont.components.imap.dto.ImapMessageDto;
 import com.haulmont.components.imap.entity.ImapMessageRef;
-import com.haulmont.components.imap.entity.MailBox;
-import com.haulmont.components.imap.events.NewEmailEvent;
+import com.haulmont.components.imap.entity.ImapMailBox;
+import com.haulmont.components.imap.events.NewEmailImapEvent;
 import com.haulmont.components.imap.service.ImapAPIService;
-import com.haulmont.components.samples.imap.entity.MailMessage;
+import com.haulmont.components.samples.imap.entity.ImapMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;
@@ -36,14 +36,14 @@ public class NewMessageListener {
     private volatile List<ImapMessageRef> messageRefs = new ArrayList<>();
 
     @EventListener
-    public void handleNewEvent(NewEmailEvent event) {
+    public void handleNewEvent(NewEmailImapEvent event) {
         try (Transaction tx = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
             int sameUids = em.createQuery(
-                    "select m from imapsample$MailMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId"
+                    "select m from imapsample$ImapMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId"
             )
                     .setParameter("uid", event.getMessageId())
-                    .setParameter("mailBoxId", event.getMailBox()) //todo: here mailbox is not initialized, should be set into folder int scheduler
+                    .setParameter("mailBoxId", event.getMessageRef().getFolder().getMailBox())
                     .getResultList()
                     .size();
             if (sameUids == 0) {
@@ -78,7 +78,7 @@ public class NewMessageListener {
     }
 
     private void flush() {
-        Collection<MailMessageDto> dtos;
+        Collection<ImapMessageDto> dtos;
         synchronized (messageRefs) {
             try {
                 dtos = imapAPI.fetchMessages(messageRefs);
@@ -91,15 +91,15 @@ public class NewMessageListener {
         authentication.begin();
         try (Transaction tx = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
-            Map<UUID, MailBox> mailBoxes = new HashMap<>();
-            for (MailMessageDto dto : dtos) {
-                MailMessage mailMessage = metadata.create(MailMessage.class);
-                MailMessage.fillMessage(mailMessage, dto, () -> {
-                    MailBox mailBox = mailBoxes.get(dto.getMailBoxId());
+            Map<UUID, ImapMailBox> mailBoxes = new HashMap<>();
+            for (ImapMessageDto dto : dtos) {
+                ImapMessage mailMessage = metadata.create(ImapMessage.class);
+                ImapMessage.fillMessage(mailMessage, dto, () -> {
+                    ImapMailBox mailBox = mailBoxes.get(dto.getMailBoxId());
                     if (mailBox == null) {
                         mailBox = em.createQuery(
-                                "select mb from mailcomponent$MailBox mb where mb.id = :mailBoxId",
-                                MailBox.class
+                                "select mb from mailcomponent$ImapMailBox mb where mb.id = :mailBoxId",
+                                ImapMailBox.class
                         ).setParameter("mailBoxId", dto.getMailBoxId()).getFirstResult();
                         if (mailBox == null) {
                             return null;

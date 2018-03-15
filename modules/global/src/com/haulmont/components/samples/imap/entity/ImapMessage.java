@@ -3,8 +3,8 @@ package com.haulmont.components.samples.imap.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.haulmont.components.imap.dto.MailMessageDto;
-import com.haulmont.components.imap.entity.MailBox;
+import com.haulmont.components.imap.dto.ImapMessageDto;
+import com.haulmont.components.imap.entity.ImapMailBox;
 import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
 import com.haulmont.cuba.core.global.DeletePolicy;
 import java.util.Date;
@@ -19,9 +19,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 @NamePattern("%s from %s|subject,from")
-@Table(name = "IMAPSAMPLE_MAIL_MESSAGE")
-@Entity(name = "imapsample$MailMessage")
-public class MailMessage extends StandardEntity {
+@Table(name = "IMAPSAMPLE_IMAP_MESSAGE")
+@Entity(name = "imapsample$ImapMessage")
+public class ImapMessage extends StandardEntity {
     private static final long serialVersionUID = 1529635256109331665L;
 
     @Column(name = "SEEN")
@@ -62,7 +62,7 @@ public class MailMessage extends StandardEntity {
     @OnDeleteInverse(DeletePolicy.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MAIL_BOX_ID")
-    protected MailBox mailBox;
+    protected ImapMailBox mailBox;
 
     public void setDate(Date date) {
         this.date = date;
@@ -156,15 +156,15 @@ public class MailMessage extends StandardEntity {
         return folderName;
     }
 
-    public void setMailBox(MailBox mailBox) {
+    public void setMailBox(ImapMailBox mailBox) {
         this.mailBox = mailBox;
     }
 
-    public MailBox getMailBox() {
+    public ImapMailBox getMailBox() {
         return mailBox;
     }
 
-    public static void fillMessage(MailMessage mailMessage, MailMessageDto dto, Supplier<MailBox> mailBoxSupplier) {
+    public static void fillMessage(ImapMessage mailMessage, ImapMessageDto dto, Supplier<ImapMailBox> mailBoxSupplier) {
         mailMessage.setMessageUid(dto.getUid());
         mailMessage.setMailBox(mailBoxSupplier.get());
         mailMessage.setFolderName(dto.getFolderName());
