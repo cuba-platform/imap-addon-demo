@@ -1,10 +1,10 @@
 package com.haulmont.components.samples.imap.core;
 
+import com.haulmont.components.imap.api.ImapAPI;
 import com.haulmont.components.imap.dto.ImapMessageDto;
 import com.haulmont.components.imap.entity.ImapMessageRef;
 import com.haulmont.components.imap.entity.ImapMailBox;
 import com.haulmont.components.imap.events.NewEmailImapEvent;
-import com.haulmont.components.imap.service.ImapAPIService;
 import com.haulmont.components.samples.imap.entity.ImapMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
@@ -29,7 +29,7 @@ public class NewMessageListener {
     private Persistence persistence;
 
     @Inject
-    private ImapAPIService imapAPI;
+    private ImapAPI imapAPI;
 
     private Timer timer;
 

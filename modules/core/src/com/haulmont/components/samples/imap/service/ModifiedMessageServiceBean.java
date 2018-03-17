@@ -1,8 +1,8 @@
 package com.haulmont.components.samples.imap.service;
 
+import com.haulmont.components.imap.api.ImapAPI;
 import com.haulmont.components.imap.entity.ImapMessageRef;
 import com.haulmont.components.imap.events.EmailFlagChangedImapEvent;
-import com.haulmont.components.imap.service.ImapAPIService;
 import com.haulmont.components.samples.imap.entity.ImapMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
@@ -26,7 +26,7 @@ public class ModifiedMessageServiceBean implements ModifiedMessageService {
     private Authentication authentication;
 
     @Inject
-    private ImapAPIService imapAPI;
+    private ImapAPI imapAPI;
 
     public void handleEvent(EmailFlagChangedImapEvent event) {
         log.info("handle event :{}", event);
