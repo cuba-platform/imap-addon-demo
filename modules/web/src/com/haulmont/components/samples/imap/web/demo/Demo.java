@@ -5,9 +5,8 @@ import com.haulmont.components.imap.dto.ImapMessageDto;
 import com.haulmont.components.imap.entity.ImapMessageRef;
 import com.haulmont.components.imap.entity.ImapFolder;
 import com.haulmont.components.imap.api.ImapFlag;
-import com.haulmont.components.imap.service.ImapAPIService;
 import com.haulmont.components.samples.imap.entity.ImapMessage;
-import com.haulmont.cuba.core.entity.FileDescriptor;
+import com.haulmont.components.samples.imap.service.ImapDemoService;
 import com.haulmont.cuba.core.global.CommitContext;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.LoadContext;
@@ -18,26 +17,28 @@ import com.haulmont.cuba.gui.components.TextField;
 import com.haulmont.cuba.gui.components.Timer;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.executors.*;
+import com.haulmont.cuba.gui.export.ByteArrayDataProvider;
+import com.haulmont.cuba.gui.export.ExportDisplay;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 import java.util.function.Consumer;
 
 public class Demo extends AbstractWindow {
 
     @Inject
-    private ImapAPIService imapAPI;
+    private ImapDemoService imapAPI;
 
     @Inject
     private BackgroundWorker backgroundWorker;
 
     @Inject
     private DataManager dm;
+
+    @Inject
+    protected ExportDisplay exportDisplay;
 
     @Inject
     private ComponentsFactory componentsFactory;
@@ -191,23 +192,26 @@ public class Demo extends AbstractWindow {
         );
     }
 
-    public void showAttachments() {
-        List<FileDescriptor> attachments = new ArrayList<>();
-
+    public void downloadAttachments() {
         forEachSelected(pair -> {
             try {
                 ImapMessageRef ref = pair.getSecond();
-                attachments.addAll(imapAPI.fetchAttachments(ref));
+                Collection<Pair<String, byte[]>> attachments = imapAPI.fetchAttachments(ref);
+                if (attachments.isEmpty()) {
+                    showNotification(
+                            "No attachments",
+                            String.format("No attachments for message '%s'", ref.getCaption()),
+                            NotificationType.TRAY
+                    );
+                }
+                attachments.forEach(attachment ->
+                        exportDisplay.show(new ByteArrayDataProvider(attachment.getSecond()), attachment.getFirst()));
             } catch (MessagingException e) {
                 throw new RuntimeException("fetch attachments error", e);
             }
         });
 
-        showNotification(
-                "Attachments of selected",
-                attachments.toString(),
-                NotificationType.WARNING
-        );
+
     }
 
     @SuppressWarnings("IncorrectCreateEntity")

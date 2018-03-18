@@ -46,8 +46,8 @@
                         caption="Show body"
                         invoke="showBody"/>
                 <action id="showAttachmentsAction"
-                        caption="Show attachments"
-                        invoke="showAttachments"/>
+                        caption="Download attachments"
+                        invoke="downloadAttachments"/>
             </actions>
             <columns>
                 <column id="subject"/>
