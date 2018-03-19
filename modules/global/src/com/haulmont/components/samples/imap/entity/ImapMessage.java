@@ -17,6 +17,9 @@ import com.haulmont.chile.core.annotations.NamePattern;
 import com.haulmont.cuba.core.entity.StandardEntity;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.validation.constraints.NotNull;
+import java.util.UUID;
+import javax.persistence.Lob;
 
 @NamePattern("%s from %s|subject,from")
 @Table(name = "IMAPSAMPLE_IMAP_MESSAGE")
@@ -30,12 +33,15 @@ public class ImapMessage extends StandardEntity {
     @Column(name = "FROM_")
     protected String from;
 
+    @Lob
     @Column(name = "TO_LIST")
     protected String toList;
 
+    @Lob
     @Column(name = "CC_LIST")
     protected String ccList;
 
+    @Lob
     @Column(name = "BCC_LIST")
     protected String bccList;
 
@@ -63,6 +69,20 @@ public class ImapMessage extends StandardEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MAIL_BOX_ID")
     protected ImapMailBox mailBox;
+
+
+    @NotNull
+    @Column(name = "IMAP_MESSAGE_ID", nullable = false)
+    protected UUID imapMessageId;
+
+    public void setImapMessageId(UUID imapMessageId) {
+        this.imapMessageId = imapMessageId;
+    }
+
+    public UUID getImapMessageId() {
+        return imapMessageId;
+    }
+
 
     public void setDate(Date date) {
         this.date = date;

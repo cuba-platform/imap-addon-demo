@@ -210,19 +210,15 @@ public class Demo extends AbstractWindow {
                 throw new RuntimeException("fetch attachments error", e);
             }
         });
-
-
     }
 
     @SuppressWarnings("IncorrectCreateEntity")
     private void forEachSelected(Consumer<Pair<ImapMessage, ImapMessageRef>> action) {
         imapMessageTable.getSelected().forEach(msg -> {
-            ImapMessageRef messageRef = new ImapMessageRef();
-            messageRef.setMsgUid(msg.getMessageUid());
-            ImapFolder folder = new ImapFolder();
-            folder.setMailBox(msg.getMailBox());
-            folder.setName(msg.getFolderName());
-            messageRef.setFolder(folder);
+            UUID imapMessageId = msg.getImapMessageId();
+            ImapMessageRef messageRef = dm.load(LoadContext.create(ImapMessageRef.class)
+                    .setId(imapMessageId).setView("imap-msg-ref-full")
+            );
             action.accept(new Pair<>(msg, messageRef));
         });
         if (!imapMessageTable.getSelected().isEmpty()) {

@@ -11,9 +11,9 @@ create table IMAPSAMPLE_IMAP_MESSAGE (
     --
     SEEN boolean,
     FROM_ varchar(255),
-    TO_LIST varchar(255),
-    CC_LIST varchar(255),
-    BCC_LIST varchar(255),
+    TO_LIST text,
+    CC_LIST text,
+    BCC_LIST text,
     SUBJECT varchar(255),
     FLAGS_LIST varchar(255),
     DATE_ timestamp,
@@ -21,6 +21,7 @@ create table IMAPSAMPLE_IMAP_MESSAGE (
     MESSAGE_UID bigint not null,
     FOLDER_NAME varchar(255) not null,
     MAIL_BOX_ID uuid,
+    IMAP_MESSAGE_ID uuid not null,
     --
     primary key (ID)
 )^
