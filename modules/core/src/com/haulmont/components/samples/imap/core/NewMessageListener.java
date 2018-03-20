@@ -2,10 +2,10 @@ package com.haulmont.components.samples.imap.core;
 
 import com.haulmont.components.imap.api.ImapAPI;
 import com.haulmont.components.imap.dto.ImapMessageDto;
-import com.haulmont.components.imap.entity.ImapMessageRef;
+import com.haulmont.components.imap.entity.ImapMessage;
 import com.haulmont.components.imap.entity.ImapMailBox;
 import com.haulmont.components.imap.events.NewEmailImapEvent;
-import com.haulmont.components.samples.imap.entity.ImapMessage;
+import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;
@@ -36,27 +36,27 @@ public class NewMessageListener {
 
     private Timer timer;
 
-    private final List<ImapMessageRef> messageRefs = new ArrayList<>();
+    private final List<ImapMessage> messages = new ArrayList<>();
 
     @EventListener
     public void handleNewEvent(NewEmailImapEvent event) {
         try (Transaction tx = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
             int sameUids = em.createQuery(
-                    "select m from imapsample$ImapMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId"
+                    "select m from imapsample$ImapDemoMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId"
             )
                     .setParameter("uid", event.getMessageId())
-                    .setParameter("mailBoxId", event.getMessageRef().getFolder().getMailBox())
+                    .setParameter("mailBoxId", event.getMessage().getFolder().getMailBox())
                     .getResultList()
                     .size();
             if (sameUids == 0) {
-                synchronized (messageRefs) {
+                synchronized (messages) {
                     if (timer != null) {
                         timer.cancel();
                     }
-                    messageRefs.add(event.getMessageRef());
+                    messages.add(event.getMessage());
                     timer = new Timer();
-                    if (messageRefs.size() > 20) {
+                    if (messages.size() > 20) {
                         flushTask().run();
                     } else {
                         timer.schedule(flushTask(), 5_000);
@@ -81,26 +81,26 @@ public class NewMessageListener {
     }
 
     private void flush() {
-        Collection<ImapMessageRef> refs;
-        synchronized (messageRefs) {
-            refs = new ArrayList<>(messageRefs);
-            messageRefs.clear();
+        Collection<ImapMessage> msgs;
+        synchronized (messages) {
+            msgs = new ArrayList<>(messages);
+            messages.clear();
         }
 
         Collection<ImapMessageDto> dtos;
         try {
-            dtos = imapAPI.fetchMessages(refs);
+            dtos = imapAPI.fetchMessages(msgs);
         } catch (Exception e) {
             throw new RuntimeException("Can't handle new message event", e);
         }
-        Map<MsgKey, UUID> refsIdByKeys = refs.stream().collect(Collectors.toMap(MsgKey::new, BaseUuidEntity::getId));
+        Map<MsgKey, UUID> msgIdsByKeys = msgs.stream().collect(Collectors.toMap(MsgKey::new, BaseUuidEntity::getId));
         authentication.begin();
         try (Transaction tx = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
             Map<UUID, ImapMailBox> mailBoxes = new HashMap<>();
             for (ImapMessageDto dto : dtos) {
-                ImapMessage imapMsg = metadata.create(ImapMessage.class);
-                ImapMessage.fillMessage(imapMsg, dto, () -> {
+                ImapDemoMessage imapMsg = metadata.create(ImapDemoMessage.class);
+                ImapDemoMessage.fillMessage(imapMsg, dto, () -> {
                     ImapMailBox mailBox = mailBoxes.get(dto.getMailBoxId());
                     if (mailBox == null) {
                         mailBox = em.createQuery(
@@ -117,7 +117,7 @@ public class NewMessageListener {
                 if (imapMsg.getMailBox() == null) {
                     continue;
                 }
-                imapMsg.setImapMessageId(refsIdByKeys.get(new MsgKey(imapMsg)));
+                imapMsg.setImapMessageId(msgIdsByKeys.get(new MsgKey(imapMsg)));
                 em.persist(imapMsg);
             }
             tx.commit();
@@ -131,12 +131,12 @@ public class NewMessageListener {
         private String folderName;
         private long uid;
 
-        public MsgKey(ImapMessage msg) {
+        public MsgKey(ImapDemoMessage msg) {
             this(msg.getMailBox().getId().toString(), msg.getFolderName(), msg.getMessageUid());
         }
 
-        public MsgKey(ImapMessageRef ref) {
-            this(ref.getFolder().getMailBox().getId().toString(), ref.getFolder().getName(), ref.getMsgUid());
+        public MsgKey(ImapMessage msg) {
+            this(msg.getFolder().getMailBox().getId().toString(), msg.getFolder().getName(), msg.getMsgUid());
         }
 
         public MsgKey(String mailboxId, String folderName, long uid) {

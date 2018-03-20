@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <views xmlns="http://schemas.haulmont.com/cuba/view.xsd">
-    <view class="com.haulmont.components.samples.imap.entity.ImapMessage"
+    <view class="com.haulmont.components.samples.imap.entity.ImapDemoMessage"
           extends="_local"
-          name="imapMessage-full">
+          name="imapDemoMessage-full">
         <property name="mailBox"
                   view="imap-mailBox-connect"/>
     </view>

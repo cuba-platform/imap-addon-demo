@@ -22,9 +22,9 @@ import java.util.UUID;
 import javax.persistence.Lob;
 
 @NamePattern("%s from %s|subject,from")
-@Table(name = "IMAPSAMPLE_IMAP_MESSAGE")
-@Entity(name = "imapsample$ImapMessage")
-public class ImapMessage extends StandardEntity {
+@Table(name = "IMAPSAMPLE_IMAP_DEMO_MESSAGE")
+@Entity(name = "imapsample$ImapDemoMessage")
+public class ImapDemoMessage extends StandardEntity {
     private static final long serialVersionUID = 1529635256109331665L;
 
     @Column(name = "SEEN")
@@ -184,7 +184,7 @@ public class ImapMessage extends StandardEntity {
         return mailBox;
     }
 
-    public static void fillMessage(ImapMessage mailMessage, ImapMessageDto dto, Supplier<ImapMailBox> mailBoxSupplier) {
+    public static void fillMessage(ImapDemoMessage mailMessage, ImapMessageDto dto, Supplier<ImapMailBox> mailBoxSupplier) {
         mailMessage.setMessageUid(dto.getUid());
         mailMessage.setMailBox(mailBoxSupplier.get());
         mailMessage.setFolderName(dto.getFolderName());

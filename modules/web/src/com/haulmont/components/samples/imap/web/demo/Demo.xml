@@ -2,20 +2,28 @@
 <window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
         caption="msg://caption"
         class="com.haulmont.components.samples.imap.web.demo.Demo"
-        datasource="imapMessageDs"
+        datasource="imapDemoMessageDs"
         messagesPack="com.haulmont.components.samples.imap.web.demo">
     <dsContext>
-        <collectionDatasource id="imapMessageDs"
+        <collectionDatasource id="imapDemoMessageDs"
                               allowCommit="false"
-                              class="com.haulmont.components.samples.imap.entity.ImapMessage"
-                              view="imapMessage-full">
+                              class="com.haulmont.components.samples.imap.entity.ImapDemoMessage"
+                              view="imapDemoMessage-full">
             <query>
-                <![CDATA[select msg from imapsample$ImapMessage msg where msg.seen = true order by msg.seenTime desc]]>
+                <![CDATA[select msg from imapsample$ImapDemoMessage msg where msg.seen = true order by msg.seenTime desc]]>
             </query>
         </collectionDatasource>
     </dsContext>
-    <layout expand="imapMessageTable"
+    <layout expand="imapDemoMessageTable"
             spacing="true">
+        <tabSheet>
+            <tab id="tab1"
+                 expand="labelId">
+                <label id="labelId"
+                       htmlEnabled="true">
+                </label>
+            </tab>
+        </tabSheet>
         <hbox caption="set custom flag"
               spacing="true">
             <textField id="flagNameField"/>
@@ -30,7 +38,7 @@
             <button caption="move to folder"
                     invoke="moveToFolder"/>
         </hbox>
-        <table id="imapMessageTable"
+        <table id="imapDemoMessageTable"
                width="100%">
             <actions>
                 <action id="deleteMessageAction"
@@ -57,16 +65,16 @@
                 <column id="flagsList"/>
                 <column id="mailBox"/>
             </columns>
-            <rows datasource="imapMessageDs"/>
+            <rows datasource="imapDemoMessageDs"/>
             <rowsCount/>
             <buttonsPanel>
                 <button caption="msg://checkNewMessage"
                         invoke="showNewMessage"/>
-                <button action="imapMessageTable.deleteMessageAction"/>
-                <button action="imapMessageTable.markAsReadAction"/>
-                <button action="imapMessageTable.markAsImportantAction"/>
-                <button action="imapMessageTable.showBodyAction"/>
-                <button action="imapMessageTable.showAttachmentsAction"/>
+                <button action="imapDemoMessageTable.deleteMessageAction"/>
+                <button action="imapDemoMessageTable.markAsReadAction"/>
+                <button action="imapDemoMessageTable.markAsImportantAction"/>
+                <button action="imapDemoMessageTable.showBodyAction"/>
+                <button action="imapDemoMessageTable.showAttachmentsAction"/>
             </buttonsPanel>
         </table>
     </layout>

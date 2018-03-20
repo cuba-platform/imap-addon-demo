@@ -5,8 +5,8 @@ import com.haulmont.components.imap.api.ImapAPI;
 import com.haulmont.components.imap.api.ImapAttachmentsAPI;
 import com.haulmont.components.imap.api.ImapFlag;
 import com.haulmont.components.imap.dto.ImapMessageDto;
-import com.haulmont.components.imap.entity.ImapMessageAttachmentRef;
-import com.haulmont.components.imap.entity.ImapMessageRef;
+import com.haulmont.components.imap.entity.ImapMessageAttachment;
+import com.haulmont.components.imap.entity.ImapMessage;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -24,34 +24,34 @@ public class ImapDemoServiceBean implements ImapDemoService {
     private ImapAttachmentsAPI imapAttachmentsAPI;
 
     @Override
-    public ImapMessageDto fetchMessage(ImapMessageRef messageRef) throws MessagingException {
-        return imapAPI.fetchMessage(messageRef);
+    public ImapMessageDto fetchMessage(ImapMessage message) throws MessagingException {
+        return imapAPI.fetchMessage(message);
     }
 
     @Override
-    public Collection<Pair<String, byte[]>> fetchAttachments(ImapMessageRef ref) throws MessagingException {
-        Collection<ImapMessageAttachmentRef> attachmentRefs = imapAPI.fetchAttachments(ref.getId());
+    public Collection<Pair<String, byte[]>> fetchAttachments(ImapMessage msg) throws MessagingException {
+        Collection<ImapMessageAttachment> attachments = imapAPI.fetchAttachments(msg.getId());
 
-        Collection<Pair<String, byte[]>> result = new ArrayList<>(attachmentRefs.size());
-        for (ImapMessageAttachmentRef attachmentRef : attachmentRefs) {
-            result.add(new Pair<>(attachmentRef.getName(), imapAttachmentsAPI.loadFile(attachmentRef)));
+        Collection<Pair<String, byte[]>> result = new ArrayList<>(attachments.size());
+        for (ImapMessageAttachment attachment : attachments) {
+            result.add(new Pair<>(attachment.getName(), imapAttachmentsAPI.loadFile(attachment)));
         }
 
         return result;
     }
 
     @Override
-    public void deleteMessage(ImapMessageRef messageRef) throws MessagingException {
-        imapAPI.deleteMessage(messageRef);
+    public void deleteMessage(ImapMessage message) throws MessagingException {
+        imapAPI.deleteMessage(message);
     }
 
     @Override
-    public void moveMessage(ImapMessageRef ref, String folderName) throws MessagingException {
-        imapAPI.moveMessage(ref, folderName);
+    public void moveMessage(ImapMessage msg, String folderName) throws MessagingException {
+        imapAPI.moveMessage(msg, folderName);
     }
 
     @Override
-    public void setFlag(ImapMessageRef messageRef, ImapFlag flag, boolean set) throws MessagingException {
-        imapAPI.setFlag(messageRef, flag, set);
+    public void setFlag(ImapMessage message, ImapFlag flag, boolean set) throws MessagingException {
+        imapAPI.setFlag(message, flag, set);
     }
 }

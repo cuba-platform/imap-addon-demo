@@ -1,8 +1,8 @@
 package com.haulmont.components.samples.imap.core;
 
-import com.haulmont.components.imap.entity.ImapMessageRef;
+import com.haulmont.components.imap.entity.ImapMessage;
 import com.haulmont.components.imap.events.EmailDeletedImapEvent;
-import com.haulmont.components.samples.imap.entity.ImapMessage;
+import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;
@@ -28,16 +28,16 @@ public class DeletedMessageListener {
     @EventListener
     public void handEmailDeleted(EmailDeletedImapEvent event) {
         log.info("deleted:{}", event);
-        ImapMessageRef messageRef = event.getMessageRef();
+        ImapMessage message = event.getMessage();
         authentication.begin();
         try (Transaction tx = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
             em.createQuery(
-                    "delete from imapsample$ImapMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId",
-                    ImapMessage.class
+                    "delete from imapsample$ImapDemoMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId",
+                    ImapDemoMessage.class
             )
-                    .setParameter("uid", messageRef.getMsgUid())
-                    .setParameter("mailBoxId", messageRef.getFolder().getMailBox())
+                    .setParameter("uid", message.getMsgUid())
+                    .setParameter("mailBoxId", message.getFolder().getMailBox())
                     .executeUpdate();
 
             tx.commit();

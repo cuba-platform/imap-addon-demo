@@ -1,5 +1,5 @@
--- begin IMAPSAMPLE_IMAP_MESSAGE
-create table IMAPSAMPLE_IMAP_MESSAGE (
+-- begin IMAPSAMPLE_IMAP_DEMO_MESSAGE
+create table IMAPSAMPLE_IMAP_DEMO_MESSAGE (
     ID uuid,
     VERSION integer not null,
     CREATE_TS timestamp,
@@ -25,4 +25,4 @@ create table IMAPSAMPLE_IMAP_MESSAGE (
     --
     primary key (ID)
 )^
--- end IMAPSAMPLE_IMAP_MESSAGE
+-- end IMAPSAMPLE_IMAP_DEMO_MESSAGE
