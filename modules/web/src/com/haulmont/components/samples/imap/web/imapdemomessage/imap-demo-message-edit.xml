@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/window.xsd"
+        caption="msg://editorCaption"
+        class="com.haulmont.components.samples.imap.web.imapdemomessage.ImapDemoMessageEdit"
+        datasource="imapDemoMessageDs"
+        focusComponent="fieldGroup"
+        messagesPack="com.haulmont.components.samples.imap.web.imapdemomessage">
+    <dsContext>
+        <datasource id="imapDemoMessageDs"
+                    class="com.haulmont.components.samples.imap.entity.ImapDemoMessage"
+                    view="imapDemoMessage-full"/>
+        <collectionDatasource id="imapDemoAttachmentsDs"
+                              allowCommit="false"
+                              class="com.haulmont.components.imap.entity.ImapMessageAttachment">
+            <query>
+                <![CDATA[select a from imapcomponent$ImapMessageAttachment a where a.imapMessage.id = :ds$imapDemoMessageDs.imapMessageId order by a.orderNumber asc]]>
+            </query>
+        </collectionDatasource>
+    </dsContext>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="scrollBox"
+            spacing="true">
+        <scrollBox id="scrollBox"
+                   spacing="true">
+            <fieldGroup id="fieldGroup"
+                        datasource="imapDemoMessageDs">
+                <column width="250px">
+                    <field property="date"/>
+                    <field property="folderName"/>
+                    <field property="mailBox"/>
+                    <field property="subject"/>
+                    <field property="from"/>
+                    <field property="toList"
+                           rows="5"/>
+                    <field property="ccList"
+                           rows="5"/>
+                    <field property="bccList"
+                           rows="5"/>
+                    <field property="flagsList"/>
+                </column>
+            </fieldGroup>
+            <tabSheet>
+                <tab id="bodyTab"
+                     caption="msg://bodyTabCaption">
+                    <label id="bodyContent"
+                           height="100%"
+                           htmlEnabled="true"/>
+                </tab>
+                <tab id="attachmentsTab"
+                     caption="msg://attachmentsTabCaption">
+                    <table id="attachmentsTable"
+                           height="100%">
+                        <actions>
+                            <action id="downloadAttachmentAction"
+                                    caption="msg://downloadAttachmentActionCaption"
+                                    invoke="downloadAttachment"/>
+                        </actions>
+                        <columns>
+                            <column id="name"/>
+                            <column id="fileSize"/>
+                        </columns>
+                        <rows datasource="imapDemoAttachmentsDs"/>
+                        <buttonsPanel>
+                            <button action="attachmentsTable.downloadAttachmentAction"/>
+                        </buttonsPanel>
+                    </table>
+                </tab>
+            </tabSheet>
+        </scrollBox>
+        <frame id="windowActions"
+               screen="editWindowActions"/>
+    </layout>
+</window>

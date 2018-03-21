@@ -16,26 +16,19 @@
     </dsContext>
     <layout expand="imapDemoMessageTable"
             spacing="true">
-        <tabSheet>
-            <tab id="tab1"
-                 expand="labelId">
-                <label id="labelId"
-                       htmlEnabled="true">
-                </label>
-            </tab>
-        </tabSheet>
-        <hbox caption="set custom flag"
+
+        <hbox caption="msg://setCustomFlagCaption"
               spacing="true">
             <textField id="flagNameField"/>
-            <button caption="set flag"
+            <button caption="msg://setFlagButtonCaption"
                     invoke="setFlag"/>
-            <button caption="unset flag"
+            <button caption="msg://unsetFlagButtonCaption"
                     invoke="unsetFlag"/>
         </hbox>
-        <hbox caption="move to folder"
+        <hbox caption="msg://moveToFolderCaption"
               spacing="true">
             <textField id="folderNameField"/>
-            <button caption="move to folder"
+            <button caption="msg://moveToFolderCaption"
                     invoke="moveToFolder"/>
         </hbox>
         <table id="imapDemoMessageTable"
@@ -48,14 +41,11 @@
                         caption="msg://markAsReadCaption"
                         invoke="markAsRead"/>
                 <action id="markAsImportantAction"
-                        caption="msg://markAsImportantAction"
+                        caption="msg://markAsImportantCaption"
                         invoke="markAsImportant"/>
-                <action id="showBodyAction"
-                        caption="Show body"
-                        invoke="showBody"/>
-                <action id="showAttachmentsAction"
-                        caption="Download attachments"
-                        invoke="downloadAttachments"/>
+                <action id="edit"
+                        openType="DIALOG"
+                        caption="msg://editCaption"/>
             </actions>
             <columns>
                 <column id="subject"/>
@@ -73,8 +63,7 @@
                 <button action="imapDemoMessageTable.deleteMessageAction"/>
                 <button action="imapDemoMessageTable.markAsReadAction"/>
                 <button action="imapDemoMessageTable.markAsImportantAction"/>
-                <button action="imapDemoMessageTable.showBodyAction"/>
-                <button action="imapDemoMessageTable.showAttachmentsAction"/>
+                <button action="imapDemoMessageTable.edit"/>
             </buttonsPanel>
         </table>
     </layout>

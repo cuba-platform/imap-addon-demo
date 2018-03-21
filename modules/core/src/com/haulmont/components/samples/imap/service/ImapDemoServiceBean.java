@@ -1,6 +1,5 @@
 package com.haulmont.components.samples.imap.service;
 
-import com.haulmont.bali.datastruct.Pair;
 import com.haulmont.components.imap.api.ImapAPI;
 import com.haulmont.components.imap.api.ImapAttachmentsAPI;
 import com.haulmont.components.imap.api.ImapFlag;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
 import javax.mail.MessagingException;
-import java.util.ArrayList;
 import java.util.Collection;
 
 @Service(ImapDemoService.NAME)
@@ -29,15 +27,13 @@ public class ImapDemoServiceBean implements ImapDemoService {
     }
 
     @Override
-    public Collection<Pair<String, byte[]>> fetchAttachments(ImapMessage msg) throws MessagingException {
-        Collection<ImapMessageAttachment> attachments = imapAPI.fetchAttachments(msg.getId());
+    public Collection<ImapMessageAttachment> getAttachments(ImapMessage msg) throws MessagingException {
+        return imapAPI.fetchAttachments(msg.getId());
+    }
 
-        Collection<Pair<String, byte[]>> result = new ArrayList<>(attachments.size());
-        for (ImapMessageAttachment attachment : attachments) {
-            result.add(new Pair<>(attachment.getName(), imapAttachmentsAPI.loadFile(attachment)));
-        }
-
-        return result;
+    @Override
+    public byte[] loadAttachment(ImapMessageAttachment attachment) throws MessagingException {
+        return imapAttachmentsAPI.loadFile(attachment);
     }
 
     @Override

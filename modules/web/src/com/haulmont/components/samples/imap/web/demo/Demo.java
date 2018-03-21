@@ -16,8 +16,6 @@ import com.haulmont.cuba.gui.components.TextField;
 import com.haulmont.cuba.gui.components.Timer;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.executors.*;
-import com.haulmont.cuba.gui.export.ByteArrayDataProvider;
-import com.haulmont.cuba.gui.export.ExportDisplay;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import javax.inject.Inject;
@@ -35,9 +33,6 @@ public class Demo extends AbstractWindow {
 
     @Inject
     private DataManager dm;
-
-    @Inject
-    protected ExportDisplay exportDisplay;
 
     @Inject
     private ComponentsFactory componentsFactory;
@@ -166,49 +161,6 @@ public class Demo extends AbstractWindow {
             }
         });
 
-    }
-
-    public void showBody() {
-        List<String> body = new ArrayList<>();
-
-        final boolean[] isHtml = {false};
-
-        forEachSelected(pair -> {
-            try {
-                ImapMessage msg = pair.getSecond();
-                ImapMessageDto dto = imapAPI.fetchMessage(msg);
-                isHtml[0] |= Boolean.TRUE.equals(dto.getHtml());
-                body.add(dto.getBody());
-            } catch (MessagingException e) {
-                throw new RuntimeException("fetch body error", e);
-            }
-        });
-
-        showNotification(
-                "Body of selected",
-                body.toString(),
-                isHtml[0] ? NotificationType.WARNING_HTML : NotificationType.WARNING
-        );
-    }
-
-    public void downloadAttachments() {
-        forEachSelected(pair -> {
-            try {
-                ImapMessage msg = pair.getSecond();
-                Collection<Pair<String, byte[]>> attachments = imapAPI.fetchAttachments(msg);
-                if (attachments.isEmpty()) {
-                    showNotification(
-                            "No attachments",
-                            String.format("No attachments for message '%s'", msg.getCaption()),
-                            NotificationType.TRAY
-                    );
-                }
-                attachments.forEach(attachment ->
-                        exportDisplay.show(new ByteArrayDataProvider(attachment.getSecond()), attachment.getFirst()));
-            } catch (MessagingException e) {
-                throw new RuntimeException("fetch attachments error", e);
-            }
-        });
     }
 
     @SuppressWarnings("IncorrectCreateEntity")
