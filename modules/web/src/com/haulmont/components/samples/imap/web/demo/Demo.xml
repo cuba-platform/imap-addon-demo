@@ -44,7 +44,6 @@
                         caption="msg://markAsImportantCaption"
                         invoke="markAsImportant"/>
                 <action id="edit"
-                        openType="DIALOG"
                         caption="msg://editCaption"/>
             </actions>
             <columns>
