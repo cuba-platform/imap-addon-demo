@@ -1,7 +1,9 @@
 package com.haulmont.components.samples.imap.core;
 
 import com.haulmont.components.imap.entity.ImapMessage;
+import com.haulmont.components.imap.events.BaseImapEvent;
 import com.haulmont.components.imap.events.EmailDeletedImapEvent;
+import com.haulmont.components.imap.events.EmailMovedImapEvent;
 import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
@@ -28,6 +30,16 @@ public class DeletedMessageListener {
     @EventListener
     public void handEmailDeleted(EmailDeletedImapEvent event) {
         log.info("deleted:{}", event);
+        handle(event);
+    }
+
+    @EventListener
+    public void handEmailDeleted(EmailMovedImapEvent event) {
+        log.info("moved:{}", event);
+        handle(event);
+    }
+
+    private void handle(BaseImapEvent event) {
         ImapMessage message = event.getMessage();
         authentication.begin();
         try (Transaction tx = persistence.createTransaction()) {
