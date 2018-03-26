@@ -1,8 +1,8 @@
 package com.haulmont.components.samples.imap.service;
 
-import com.haulmont.components.imap.api.ImapAPI;
-import com.haulmont.components.imap.entity.ImapMessage;
-import com.haulmont.components.imap.events.EmailFlagChangedImapEvent;
+import com.haulmont.addon.imap.api.ImapAPI;
+import com.haulmont.addon.imap.entity.ImapMessage;
+import com.haulmont.addon.imap.events.EmailFlagChangedImapEvent;
 import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;

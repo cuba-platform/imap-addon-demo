@@ -3,8 +3,8 @@ package com.haulmont.components.samples.imap.entity;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import com.haulmont.components.imap.dto.ImapMessageDto;
-import com.haulmont.components.imap.entity.ImapMailBox;
+import com.haulmont.addon.imap.dto.ImapMessageDto;
+import com.haulmont.addon.imap.entity.ImapMailBox;
 import com.haulmont.cuba.core.entity.annotation.OnDeleteInverse;
 import com.haulmont.cuba.core.global.DeletePolicy;
 import java.util.Date;

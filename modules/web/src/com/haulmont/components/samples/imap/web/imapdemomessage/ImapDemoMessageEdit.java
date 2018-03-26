@@ -1,8 +1,8 @@
 package com.haulmont.components.samples.imap.web.imapdemomessage;
 
-import com.haulmont.components.imap.dto.ImapMessageDto;
-import com.haulmont.components.imap.entity.ImapMessage;
-import com.haulmont.components.imap.entity.ImapMessageAttachment;
+import com.haulmont.addon.imap.dto.ImapMessageDto;
+import com.haulmont.addon.imap.entity.ImapMessage;
+import com.haulmont.addon.imap.entity.ImapMessageAttachment;
 import com.haulmont.components.samples.imap.service.ImapDemoService;
 import com.haulmont.cuba.core.entity.Entity;
 import com.haulmont.cuba.core.global.CommitContext;

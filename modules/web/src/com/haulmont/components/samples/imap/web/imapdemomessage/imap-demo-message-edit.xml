@@ -11,7 +11,7 @@
                     view="imapDemoMessage-full"/>
         <collectionDatasource id="imapDemoAttachmentsDs"
                               allowCommit="false"
-                              class="com.haulmont.components.imap.entity.ImapMessageAttachment"
+                              class="com.haulmont.addon.imap.entity.ImapMessageAttachment"
                               view="imap-msg-attachment-full">
             <query>
                 <![CDATA[select a from imapcomponent$ImapMessageAttachment a where a.imapMessage.id = :ds$imapDemoMessageDs.imapMessageId order by a.orderNumber asc]]>

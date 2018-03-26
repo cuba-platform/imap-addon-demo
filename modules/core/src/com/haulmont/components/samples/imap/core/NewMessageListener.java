@@ -1,10 +1,10 @@
 package com.haulmont.components.samples.imap.core;
 
-import com.haulmont.components.imap.api.ImapAPI;
-import com.haulmont.components.imap.dto.ImapMessageDto;
-import com.haulmont.components.imap.entity.ImapMessage;
-import com.haulmont.components.imap.entity.ImapMailBox;
-import com.haulmont.components.imap.events.NewEmailImapEvent;
+import com.haulmont.addon.imap.api.ImapAPI;
+import com.haulmont.addon.imap.dto.ImapMessageDto;
+import com.haulmont.addon.imap.entity.ImapMessage;
+import com.haulmont.addon.imap.entity.ImapMailBox;
+import com.haulmont.addon.imap.events.NewEmailImapEvent;
 import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;

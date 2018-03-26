@@ -41,7 +41,7 @@ cuba {
 }
 
 dependencies {
-    appComponent("com.haulmont.components.imap:imap-global:0.1-SNAPSHOT")
+    appComponent("com.haulmont.addon.imap:imap-global:0.1-SNAPSHOT")
 
 }
 

@@ -1,11 +1,11 @@
 package com.haulmont.components.samples.imap.service;
 
-import com.haulmont.components.imap.api.ImapAPI;
-import com.haulmont.components.imap.api.ImapAttachmentsAPI;
-import com.haulmont.components.imap.api.ImapFlag;
-import com.haulmont.components.imap.dto.ImapMessageDto;
-import com.haulmont.components.imap.entity.ImapMessageAttachment;
-import com.haulmont.components.imap.entity.ImapMessage;
+import com.haulmont.addon.imap.api.ImapAPI;
+import com.haulmont.addon.imap.api.ImapAttachmentsAPI;
+import com.haulmont.addon.imap.api.ImapFlag;
+import com.haulmont.addon.imap.dto.ImapMessageDto;
+import com.haulmont.addon.imap.entity.ImapMessageAttachment;
+import com.haulmont.addon.imap.entity.ImapMessage;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;

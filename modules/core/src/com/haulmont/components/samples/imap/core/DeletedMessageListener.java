@@ -1,9 +1,9 @@
 package com.haulmont.components.samples.imap.core;
 
-import com.haulmont.components.imap.entity.ImapMessage;
-import com.haulmont.components.imap.events.BaseImapEvent;
-import com.haulmont.components.imap.events.EmailDeletedImapEvent;
-import com.haulmont.components.imap.events.EmailMovedImapEvent;
+import com.haulmont.addon.imap.entity.ImapMessage;
+import com.haulmont.addon.imap.events.BaseImapEvent;
+import com.haulmont.addon.imap.events.EmailDeletedImapEvent;
+import com.haulmont.addon.imap.events.EmailMovedImapEvent;
 import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
