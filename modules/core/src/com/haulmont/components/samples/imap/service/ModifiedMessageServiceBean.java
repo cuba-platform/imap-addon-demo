@@ -13,9 +13,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 
 @Service(ModifiedMessageService.NAME)
+@SuppressWarnings({"CdiInjectionPointsInspection", "SpringJavaAutowiredFieldsWarningInspection"})
 public class ModifiedMessageServiceBean implements ModifiedMessageService {
     private final static Logger log = LoggerFactory.getLogger(ModifiedMessageServiceBean.class);
 
@@ -50,8 +50,6 @@ public class ModifiedMessageServiceBean implements ModifiedMessageService {
 
             em.persist(msg);
             tx.commit();
-        } catch (MessagingException e) {
-            throw new RuntimeException("Can't handle event " + event + ". Messaging error", e);
         } finally {
             authentication.end();
         }

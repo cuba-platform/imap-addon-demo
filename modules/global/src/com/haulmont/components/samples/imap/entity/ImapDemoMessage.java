@@ -28,7 +28,7 @@ public class ImapDemoMessage extends StandardEntity {
     private static final long serialVersionUID = 1529635256109331665L;
 
     @Column(name = "SEEN")
-    protected Boolean seen;
+    private Boolean seen;
 
     @Column(name = "FROM_")
     protected String from;
@@ -57,10 +57,10 @@ public class ImapDemoMessage extends StandardEntity {
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "SEEN_TIME")
-    protected Date seenTime;
+    private Date seenTime;
 
     @Column(name = "MESSAGE_UID", nullable = false)
-    protected Long messageUid;
+    private Long messageUid;
 
     @Column(name = "FOLDER_NAME", nullable = false)
     protected String folderName;
@@ -70,10 +70,9 @@ public class ImapDemoMessage extends StandardEntity {
     @JoinColumn(name = "MAIL_BOX_ID")
     protected ImapMailBox mailBox;
 
-
     @NotNull
     @Column(name = "IMAP_MESSAGE_ID", nullable = false)
-    protected UUID imapMessageId;
+    private UUID imapMessageId;
 
     public void setImapMessageId(UUID imapMessageId) {
         this.imapMessageId = imapMessageId;
