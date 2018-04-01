@@ -5,12 +5,10 @@ import com.haulmont.addon.imap.entity.ImapMessage;
 import com.haulmont.addon.imap.entity.ImapMessageAttachment;
 import com.haulmont.components.samples.imap.service.ImapDemoService;
 import com.haulmont.cuba.core.entity.Entity;
-import com.haulmont.cuba.core.global.CommitContext;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.LoadContext;
 import com.haulmont.cuba.gui.components.AbstractEditor;
 import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
-import com.haulmont.cuba.gui.components.Frame;
 import com.haulmont.cuba.gui.components.Label;
 import com.haulmont.cuba.gui.components.Table;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
@@ -19,10 +17,10 @@ import com.haulmont.cuba.gui.export.ByteArrayDataProvider;
 import com.haulmont.cuba.gui.export.ExportDisplay;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 import java.util.List;
 import java.util.UUID;
 
+@SuppressWarnings({"CdiInjectionPointsInspection", "SpringJavaAutowiredFieldsWarningInspection"})
 public class ImapDemoMessageEdit extends AbstractEditor<ImapDemoMessage> {
 
     @Inject
@@ -44,7 +42,7 @@ public class ImapDemoMessageEdit extends AbstractEditor<ImapDemoMessage> {
     private BackgroundWorker backgroundWorker;
 
     @Inject
-    protected ExportDisplay exportDisplay;
+    private ExportDisplay exportDisplay;
 
     @Override
     public void setItem(Entity item) {
@@ -63,16 +61,10 @@ public class ImapDemoMessageEdit extends AbstractEditor<ImapDemoMessage> {
     }
 
     public void downloadAttachment() {
-        attachmentsTable.getSelected().forEach(attachment -> {
-            try {
-                exportDisplay.show(
-                        new ByteArrayDataProvider(imapAPI.loadAttachment(attachment)),
-                        attachment.getName()
-                );
-            } catch (MessagingException e) {
-                throw new RuntimeException("Can't download attachment#" + attachment.getImapMessage(), e);
-            }
-        });
+        attachmentsTable.getSelected().forEach(attachment -> exportDisplay.show(
+                new ByteArrayDataProvider(imapAPI.loadAttachment(attachment)),
+                attachment.getName()
+        ));
     }
 
     private void initBody(ImapMessage msg) {
@@ -90,19 +82,15 @@ public class ImapDemoMessageEdit extends AbstractEditor<ImapDemoMessage> {
     private class InitBodyTask extends BackgroundTask<Integer, String> {
         private final ImapMessage msg;
 
-        public InitBodyTask(ImapMessage msg) {
+        InitBodyTask(ImapMessage msg) {
             super(0, ImapDemoMessageEdit.this);
             this.msg = msg;
         }
 
         @Override
         public String run(TaskLifeCycle<Integer> taskLifeCycle) {
-            try {
-                ImapMessageDto dto = imapAPI.fetchMessage(msg);
-                return dto.getBody();
-            } catch (MessagingException e) {
-                throw new RuntimeException("Can't fetch message#" + msg.getId(), e);
-            }
+            ImapMessageDto dto = imapAPI.fetchMessage(msg);
+            return dto.getBody();
 
         }
 
@@ -125,19 +113,15 @@ public class ImapDemoMessageEdit extends AbstractEditor<ImapDemoMessage> {
     private class InitAttachmentTask extends BackgroundTask<Integer, Void> {
         private final ImapMessage msg;
 
-        public InitAttachmentTask(ImapMessage msg) {
+        InitAttachmentTask(ImapMessage msg) {
             super(0, ImapDemoMessageEdit.this);
             this.msg = msg;
         }
 
         @Override
         public Void run(TaskLifeCycle<Integer> taskLifeCycle) {
-            try {
-                imapAPI.getAttachments(msg);
-                return null;
-            } catch (MessagingException e) {
-                throw new RuntimeException("Can't fetch attachments for message#" + msg.getId(), e);
-            }
+            imapAPI.getAttachments(msg);
+            return null;
         }
 
         @Override

@@ -9,10 +9,10 @@ import com.haulmont.addon.imap.entity.ImapMessage;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 import java.util.Collection;
 
 @Service(ImapDemoService.NAME)
+@SuppressWarnings({"CdiInjectionPointsInspection", "SpringJavaAutowiredFieldsWarningInspection"})
 public class ImapDemoServiceBean implements ImapDemoService {
 
     @Inject
@@ -22,32 +22,32 @@ public class ImapDemoServiceBean implements ImapDemoService {
     private ImapAttachmentsAPI imapAttachmentsAPI;
 
     @Override
-    public ImapMessageDto fetchMessage(ImapMessage message) throws MessagingException {
+    public ImapMessageDto fetchMessage(ImapMessage message) {
         return imapAPI.fetchMessage(message);
     }
 
     @Override
-    public Collection<ImapMessageAttachment> getAttachments(ImapMessage msg) throws MessagingException {
+    public Collection<ImapMessageAttachment> getAttachments(ImapMessage msg) {
         return imapAPI.fetchAttachments(msg.getId());
     }
 
     @Override
-    public byte[] loadAttachment(ImapMessageAttachment attachment) throws MessagingException {
+    public byte[] loadAttachment(ImapMessageAttachment attachment) {
         return imapAttachmentsAPI.loadFile(attachment);
     }
 
     @Override
-    public void deleteMessage(ImapMessage message) throws MessagingException {
+    public void deleteMessage(ImapMessage message) {
         imapAPI.deleteMessage(message);
     }
 
     @Override
-    public void moveMessage(ImapMessage msg, String folderName) throws MessagingException {
+    public void moveMessage(ImapMessage msg, String folderName) {
         imapAPI.moveMessage(msg, folderName);
     }
 
     @Override
-    public void setFlag(ImapMessage message, ImapFlag flag, boolean set) throws MessagingException {
+    public void setFlag(ImapMessage message, ImapFlag flag, boolean set) {
         imapAPI.setFlag(message, flag, set);
     }
 }

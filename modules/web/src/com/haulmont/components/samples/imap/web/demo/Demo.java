@@ -19,10 +19,10 @@ import com.haulmont.cuba.gui.executors.*;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
 
 import javax.inject.Inject;
-import javax.mail.MessagingException;
 import java.util.*;
 import java.util.function.Consumer;
 
+@SuppressWarnings({"CdiInjectionPointsInspection", "SpringJavaAutowiredFieldsWarningInspection"})
 public class Demo extends AbstractWindow {
 
     @Inject
@@ -75,36 +75,24 @@ public class Demo extends AbstractWindow {
 
     public void deleteMessage() {
         forEachSelected(pair -> {
-            try {
-                imapAPI.deleteMessage(pair.getSecond());
-                dm.remove(pair.getFirst());
-            } catch (MessagingException e) {
-                throw new RuntimeException("delete error", e);
-            }
+            imapAPI.deleteMessage(pair.getSecond());
+            dm.remove(pair.getFirst());
         });
     }
 
     public void markAsRead() {
         forEachSelected(pair -> {
-            try {
-                ImapMessage msg = pair.getSecond();
-                imapAPI.setFlag(msg, ImapFlag.SEEN, true);
-                updateMessage(pair, msg);
-            } catch (MessagingException e) {
-                throw new RuntimeException("markAsRead error", e);
-            }
+            ImapMessage msg = pair.getSecond();
+            imapAPI.setFlag(msg, ImapFlag.SEEN, true);
+            updateMessage(pair, msg);
         });
     }
 
     public void markAsImportant() {
         forEachSelected(pair -> {
-            try {
-                ImapMessage msg = pair.getSecond();
-                imapAPI.setFlag(msg, ImapFlag.IMPORTANT, true);
-                updateMessage(pair, msg);
-            } catch (MessagingException e) {
-                throw new RuntimeException("markAsImportant error", e);
-            }
+            ImapMessage msg = pair.getSecond();
+            imapAPI.setFlag(msg, ImapFlag.IMPORTANT, true);
+            updateMessage(pair, msg);
         });
     }
 
@@ -114,13 +102,9 @@ public class Demo extends AbstractWindow {
             return;
         }
         forEachSelected(pair -> {
-            try {
-                ImapMessage msg = pair.getSecond();
-                imapAPI.setFlag(msg, new ImapFlag(flagName), true);
-                updateMessage(pair, msg);
-            } catch (MessagingException e) {
-                throw new RuntimeException("set flag " + flagName + " error", e);
-            }
+            ImapMessage msg = pair.getSecond();
+            imapAPI.setFlag(msg, new ImapFlag(flagName), true);
+            updateMessage(pair, msg);
         });
     }
 
@@ -130,17 +114,13 @@ public class Demo extends AbstractWindow {
             return;
         }
         forEachSelected(pair -> {
-            try {
-                ImapMessage msg = pair.getSecond();
-                imapAPI.setFlag(msg, new ImapFlag(flagName), false);
-                updateMessage(pair, msg);
-            } catch (MessagingException e) {
-                throw new RuntimeException("unset flag " + flagName + " error", e);
-            }
+            ImapMessage msg = pair.getSecond();
+            imapAPI.setFlag(msg, new ImapFlag(flagName), false);
+            updateMessage(pair, msg);
         });
     }
 
-    private void updateMessage(Pair<ImapDemoMessage, ImapMessage> pair, ImapMessage msg) throws MessagingException {
+    private void updateMessage(Pair<ImapDemoMessage, ImapMessage> pair, ImapMessage msg) {
         ImapMessageDto dto = imapAPI.fetchMessage(msg);
         ImapDemoMessage imapMessage = pair.getFirst();
         ImapDemoMessage.fillMessage(imapMessage, dto, imapMessage::getMailBox);
@@ -153,12 +133,8 @@ public class Demo extends AbstractWindow {
             return;
         }
         forEachSelected(pair -> {
-            try {
-                ImapMessage msg = pair.getSecond();
-                imapAPI.moveMessage(msg, folderName);
-            } catch (MessagingException e) {
-                throw new RuntimeException("move to folder " + folderName + " error", e);
-            }
+            ImapMessage msg = pair.getSecond();
+            imapAPI.moveMessage(msg, folderName);
         });
 
     }
