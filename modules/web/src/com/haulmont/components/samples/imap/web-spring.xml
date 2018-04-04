@@ -12,6 +12,8 @@
             <map>
                 <entry key="imapsample_ModifiedMessageService"
                        value="com.haulmont.components.samples.imap.service.ModifiedMessageService"/>
+                <entry key="imapsample_ImapMonitorService"
+                       value="com.haulmont.components.samples.imap.service.ImapMonitorService"/>
                 <entry key="imapsample_ImapDemoService"
                        value="com.haulmont.components.samples.imap.service.ImapDemoService"/>
             </map>
