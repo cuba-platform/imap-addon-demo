@@ -50,7 +50,7 @@ public class ImapDemoMessageEdit extends AbstractEditor<ImapDemoMessage> {
 
         ImapDemoMessage msg = (ImapDemoMessage) item;
         ImapMessage imapMessage = dm.load(LoadContext.create(ImapMessage.class).setQuery(
-                LoadContext.createQuery("select m from imapcomponent$ImapMessage m where m.id = :msgId")
+                LoadContext.createQuery("select m from imap$Message m where m.id = :msgId")
                         .setParameter("msgId", msg.getImapMessageId()))
                 .setView("imap-msg-full"));
 

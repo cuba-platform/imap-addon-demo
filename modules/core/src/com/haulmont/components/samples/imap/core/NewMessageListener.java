@@ -4,6 +4,7 @@ import com.haulmont.addon.imap.api.ImapAPI;
 import com.haulmont.addon.imap.dto.ImapMessageDto;
 import com.haulmont.addon.imap.entity.ImapMessage;
 import com.haulmont.addon.imap.entity.ImapMailBox;
+import com.haulmont.addon.imap.events.EmailAnsweredImapEvent;
 import com.haulmont.addon.imap.events.NewEmailImapEvent;
 import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
 import com.haulmont.cuba.core.EntityManager;
@@ -12,6 +13,8 @@ import com.haulmont.cuba.core.Transaction;
 import com.haulmont.cuba.core.entity.BaseUuidEntity;
 import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.security.app.Authentication;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
@@ -21,6 +24,8 @@ import java.util.stream.Collectors;
 
 @Component
 public class NewMessageListener {
+
+    private final static Logger log = LoggerFactory.getLogger(NewMessageListener.class);
 
     @Inject
     private Authentication authentication;
@@ -66,6 +71,10 @@ public class NewMessageListener {
         }
     }
 
+    public void handlerAnsweredEvent(EmailAnsweredImapEvent event) {
+        log.info("new answer: {}", event);
+    }
+
     private TimerTask flushTask() {
         return new TimerTask() {
             @Override
@@ -104,7 +113,7 @@ public class NewMessageListener {
                     ImapMailBox mailBox = mailBoxes.get(dto.getMailBoxId());
                     if (mailBox == null) {
                         mailBox = em.createQuery(
-                                "select mb from imapcomponent$ImapMailBox mb where mb.id = :mailBoxId",
+                                "select mb from imap$MailBox mb where mb.id = :mailBoxId",
                                 ImapMailBox.class
                         ).setParameter("mailBoxId", dto.getMailBoxId()).getFirstResult();
                         if (mailBox == null) {
