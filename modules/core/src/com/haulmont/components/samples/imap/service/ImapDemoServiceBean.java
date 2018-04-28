@@ -28,7 +28,7 @@ public class ImapDemoServiceBean implements ImapDemoService {
 
     @Override
     public Collection<ImapMessageAttachment> getAttachments(ImapMessage msg) {
-        return imapAPI.fetchAttachments(msg.getId());
+        return imapAPI.fetchAttachments(msg);
     }
 
     @Override
