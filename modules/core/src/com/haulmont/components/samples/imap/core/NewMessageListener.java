@@ -27,25 +27,26 @@ public class NewMessageListener {
 
     private final static Logger log = LoggerFactory.getLogger(NewMessageListener.class);
 
-    @Inject
-    private Authentication authentication;
-
-    @Inject
-    private Metadata metadata;
-
-    @Inject
-    private Persistence persistence;
-
-    @Inject
-    private ImapAPI imapAPI;
-
+    private final Authentication authentication;
+    private final Metadata metadata;
+    private final Persistence persistence;
+    private final ImapAPI imapAPI;
     private Timer timer;
 
     private final List<ImapMessage> messages = new ArrayList<>();
 
+    @SuppressWarnings("CdiInjectionPointsInspection")
+    @Inject
+    public NewMessageListener(Authentication authentication, Metadata metadata, Persistence persistence, ImapAPI imapAPI) {
+        this.authentication = authentication;
+        this.metadata = metadata;
+        this.persistence = persistence;
+        this.imapAPI = imapAPI;
+    }
+
     @EventListener
     public void handleNewEvent(NewEmailImapEvent event) {
-        try (Transaction tx = persistence.createTransaction()) {
+        try (Transaction ignore = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
             int sameUids = em.createQuery(
                     "select m from imapsample$ImapDemoMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId"
@@ -71,6 +72,7 @@ public class NewMessageListener {
         }
     }
 
+    @SuppressWarnings("unused")
     public void handlerAnsweredEvent(EmailAnsweredImapEvent event) {
         log.info("new answer: {}", event);
     }
@@ -90,13 +92,13 @@ public class NewMessageListener {
     }
 
     private void flush() {
-        Collection<ImapMessage> msgs;
+        List<ImapMessage> msgs;
         synchronized (messages) {
             msgs = new ArrayList<>(messages);
             messages.clear();
         }
 
-        Collection<ImapMessageDto> dtos;
+        List<ImapMessageDto> dtos;
         try {
             dtos = imapAPI.fetchMessages(msgs);
         } catch (Exception e) {
@@ -140,15 +142,15 @@ public class NewMessageListener {
         private String folderName;
         private long uid;
 
-        public MsgKey(ImapDemoMessage msg) {
+        MsgKey(ImapDemoMessage msg) {
             this(msg.getMailBox().getId().toString(), msg.getFolderName(), msg.getMessageUid());
         }
 
-        public MsgKey(ImapMessage msg) {
+        MsgKey(ImapMessage msg) {
             this(msg.getFolder().getMailBox().getId().toString(), msg.getFolder().getName(), msg.getMsgUid());
         }
 
-        public MsgKey(String mailboxId, String folderName, long uid) {
+        MsgKey(String mailboxId, String folderName, long uid) {
             this.mailboxId = mailboxId;
             this.folderName = folderName;
             this.uid = uid;
