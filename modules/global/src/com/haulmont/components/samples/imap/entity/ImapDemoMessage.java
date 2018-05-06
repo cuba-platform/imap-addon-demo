@@ -190,9 +190,9 @@ public class ImapDemoMessage extends StandardEntity {
         mailMessage.setDate(dto.getDate());
         mailMessage.setSubject(dto.getSubject());
         mailMessage.setFrom(dto.getFrom());
-        mailMessage.setToList(dto.getToList().toString());
-        mailMessage.setBccList(dto.getBccList().toString());
-        mailMessage.setCcList(dto.getCcList().toString());
-        mailMessage.setFlagsList(dto.getFlags().toString());
+        mailMessage.setToList(dto.getTo());
+        mailMessage.setBccList(dto.getBcc());
+        mailMessage.setCcList(dto.getCc());
+        mailMessage.setFlagsList(dto.getFlags());
     }
 }

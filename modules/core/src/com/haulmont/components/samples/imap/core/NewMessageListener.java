@@ -112,16 +112,17 @@ public class NewMessageListener {
             for (ImapMessageDto dto : dtos) {
                 ImapDemoMessage imapMsg = metadata.create(ImapDemoMessage.class);
                 ImapDemoMessage.fillMessage(imapMsg, dto, () -> {
-                    ImapMailBox mailBox = mailBoxes.get(dto.getMailBoxId());
+                    UUID mailBoxId = dto.getMailBox().getId();
+                    ImapMailBox mailBox = mailBoxes.get(mailBoxId);
                     if (mailBox == null) {
                         mailBox = em.createQuery(
                                 "select mb from imap$MailBox mb where mb.id = :mailBoxId",
                                 ImapMailBox.class
-                        ).setParameter("mailBoxId", dto.getMailBoxId()).getFirstResult();
+                        ).setParameter("mailBoxId", mailBoxId).getFirstResult();
                         if (mailBox == null) {
                             return null;
                         }
-                        mailBoxes.put(dto.getMailBoxId(), mailBox);
+                        mailBoxes.put(mailBoxId, mailBox);
                     }
                     return mailBox;
                 });

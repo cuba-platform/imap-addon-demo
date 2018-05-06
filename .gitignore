@@ -9,6 +9,7 @@ modules/*/build/*
 out
 test-run
 .idea
-.ideaDataSources
-dataSources
+.ideaDataSources/
+dataSources/
+test-home/
 studio-settings.xml
