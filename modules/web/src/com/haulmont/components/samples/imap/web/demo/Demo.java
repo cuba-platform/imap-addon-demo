@@ -10,6 +10,7 @@ import com.haulmont.cuba.core.global.CommitContext;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.LoadContext;
 import com.haulmont.cuba.core.global.TimeSource;
+import com.haulmont.cuba.gui.WindowManager;
 import com.haulmont.cuba.gui.components.AbstractWindow;
 import com.haulmont.cuba.gui.components.Table;
 import com.haulmont.cuba.gui.components.TextField;
@@ -71,6 +72,13 @@ public class Demo extends AbstractWindow {
     public void showNewMessage() {
         BackgroundTaskHandler taskHandler = backgroundWorker.handle(task());
         taskHandler.execute();
+    }
+
+    public void viewMessage() {
+        forEachSelected(pair -> {
+            ImapMessage msg = pair.getSecond();
+            openEditor(msg, WindowManager.OpenType.THIS_TAB);
+        });
     }
 
     public void deleteMessage() {

@@ -43,8 +43,9 @@
                 <action id="markAsImportantAction"
                         caption="msg://markAsImportantCaption"
                         invoke="markAsImportant"/>
-                <action id="edit"
-                        caption="msg://editCaption"/>
+                <action id="viewMessage"
+                        caption="msg://viewCaption"
+                        invoke="viewMessage"/>
             </actions>
             <columns>
                 <column id="subject"/>
@@ -62,7 +63,7 @@
                 <button action="imapDemoMessageTable.deleteMessageAction"/>
                 <button action="imapDemoMessageTable.markAsReadAction"/>
                 <button action="imapDemoMessageTable.markAsImportantAction"/>
-                <button action="imapDemoMessageTable.edit"/>
+                <button action="imapDemoMessageTable.viewMessage"/>
             </buttonsPanel>
         </table>
     </layout>
