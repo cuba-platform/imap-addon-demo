@@ -69,6 +69,7 @@ public class Demo extends AbstractWindow {
         timer.start();
     }
 
+    @SuppressWarnings("WeakerAccess")
     public void showNewMessage() {
         BackgroundTaskHandler taskHandler = backgroundWorker.handle(task());
         taskHandler.execute();

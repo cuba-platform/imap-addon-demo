@@ -3,6 +3,4 @@
     <include file="com/haulmont/components/samples/imap/screens.xml"/>
     <screen id="Demo"
             template="com/haulmont/components/samples/imap/web/demo/Demo.xml"/>
-    <screen id="imapsample$ImapDemoMessage.edit"
-            template="com/haulmont/components/samples/imap/web/imapdemomessage/imap-demo-message-edit.xml"/>
 </screen-config>

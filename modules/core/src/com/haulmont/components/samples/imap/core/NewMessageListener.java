@@ -48,14 +48,14 @@ public class NewMessageListener {
     public void handleNewEvent(NewEmailImapEvent event) {
         try (Transaction ignore = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
-            int sameUids = em.createQuery(
+            int sameUIDs = em.createQuery(
                     "select m from imapsample$ImapDemoMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId"
             )
                     .setParameter("uid", event.getMessageId())
                     .setParameter("mailBoxId", event.getMessage().getFolder().getMailBox())
                     .getResultList()
                     .size();
-            if (sameUids == 0) {
+            if (sameUIDs == 0) {
                 synchronized (messages) {
                     if (timer != null) {
                         timer.cancel();
@@ -92,19 +92,19 @@ public class NewMessageListener {
     }
 
     private void flush() {
-        List<ImapMessage> msgs;
+        List<ImapMessage> imapMessages;
         synchronized (messages) {
-            msgs = new ArrayList<>(messages);
+            imapMessages = new ArrayList<>(messages);
             messages.clear();
         }
 
         List<ImapMessageDto> dtos;
         try {
-            dtos = imapAPI.fetchMessages(msgs);
+            dtos = imapAPI.fetchMessages(imapMessages);
         } catch (Exception e) {
             throw new RuntimeException("Can't handle new message event", e);
         }
-        Map<MsgKey, UUID> msgIdsByKeys = msgs.stream().collect(Collectors.toMap(MsgKey::new, BaseUuidEntity::getId));
+        Map<MsgKey, UUID> msgIdsByKeys = imapMessages.stream().collect(Collectors.toMap(MsgKey::new, BaseUuidEntity::getId));
         authentication.begin();
         try (Transaction tx = persistence.createTransaction()) {
             EntityManager em = persistence.getEntityManager();
@@ -139,9 +139,9 @@ public class NewMessageListener {
     }
 
     private static class MsgKey {
-        private String mailboxId;
-        private String folderName;
-        private long uid;
+        private final String mailboxId;
+        private final String folderName;
+        private final long uid;
 
         MsgKey(ImapDemoMessage msg) {
             this(msg.getMailBox().getId().toString(), msg.getFolderName(), msg.getMessageUid());

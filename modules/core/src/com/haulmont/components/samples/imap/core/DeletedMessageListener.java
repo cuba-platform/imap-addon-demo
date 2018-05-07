@@ -21,11 +21,15 @@ public class DeletedMessageListener {
 
     private final static Logger log = LoggerFactory.getLogger(DeletedMessageListener.class);
 
-    @Inject
-    private Persistence persistence;
+    private final Persistence persistence;
+    private final Authentication authentication;
 
+    @SuppressWarnings("CdiInjectionPointsInspection")
     @Inject
-    private Authentication authentication;
+    public DeletedMessageListener(Persistence persistence, Authentication authentication) {
+        this.persistence = persistence;
+        this.authentication = authentication;
+    }
 
     @EventListener
     public void handEmailDeleted(EmailDeletedImapEvent event) {

@@ -31,29 +31,29 @@ public class ImapDemoMessage extends StandardEntity {
     private Boolean seen;
 
     @Column(name = "FROM_")
-    protected String from;
+    private String from;
 
     @Lob
     @Column(name = "TO_LIST")
-    protected String toList;
+    private String toList;
 
     @Lob
     @Column(name = "CC_LIST")
-    protected String ccList;
+    private String ccList;
 
     @Lob
     @Column(name = "BCC_LIST")
-    protected String bccList;
+    private String bccList;
 
     @Column(name = "SUBJECT")
-    protected String subject;
+    private String subject;
 
     @Column(name = "FLAGS_LIST")
-    protected String flagsList;
+    private String flagsList;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "DATE_")
-    protected Date date;
+    private Date date;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "SEEN_TIME")
@@ -63,12 +63,12 @@ public class ImapDemoMessage extends StandardEntity {
     private Long messageUid;
 
     @Column(name = "FOLDER_NAME", nullable = false)
-    protected String folderName;
+    private String folderName;
 
     @OnDeleteInverse(DeletePolicy.CASCADE)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "MAIL_BOX_ID")
-    protected ImapMailBox mailBox;
+    private ImapMailBox mailBox;
 
     @NotNull
     @Column(name = "IMAP_MESSAGE_ID", nullable = false)
@@ -82,26 +82,27 @@ public class ImapDemoMessage extends StandardEntity {
         return imapMessageId;
     }
 
-
-    public void setDate(Date date) {
+    private void setDate(Date date) {
         this.date = date;
     }
 
+    @SuppressWarnings("unused")
     public Date getDate() {
         return date;
     }
 
 
-    public void setFlagsList(String flagsList) {
+    private void setFlagsList(String flagsList) {
         this.flagsList = flagsList;
     }
 
+    @SuppressWarnings("unused")
     public String getFlagsList() {
         return flagsList;
     }
 
 
-    public void setFrom(String from) {
+    private void setFrom(String from) {
         this.from = from;
     }
 
@@ -109,31 +110,34 @@ public class ImapDemoMessage extends StandardEntity {
         return from;
     }
 
-    public void setToList(String toList) {
+    private void setToList(String toList) {
         this.toList = toList;
     }
 
+    @SuppressWarnings("unused")
     public String getToList() {
         return toList;
     }
 
-    public void setCcList(String ccList) {
+    private void setCcList(String ccList) {
         this.ccList = ccList;
     }
 
+    @SuppressWarnings("unused")
     public String getCcList() {
         return ccList;
     }
 
-    public void setBccList(String bccList) {
+    private void setBccList(String bccList) {
         this.bccList = bccList;
     }
 
+    @SuppressWarnings("unused")
     public String getBccList() {
         return bccList;
     }
 
-    public void setSubject(String subject) {
+    private void setSubject(String subject) {
         this.subject = subject;
     }
 
@@ -146,6 +150,7 @@ public class ImapDemoMessage extends StandardEntity {
         this.seenTime = seenTime;
     }
 
+    @SuppressWarnings("unused")
     public Date getSeenTime() {
         return seenTime;
     }
@@ -155,11 +160,12 @@ public class ImapDemoMessage extends StandardEntity {
         this.seen = seen;
     }
 
+    @SuppressWarnings("unused")
     public Boolean getSeen() {
         return seen;
     }
 
-    public void setMessageUid(Long messageUid) {
+    private void setMessageUid(Long messageUid) {
         this.messageUid = messageUid;
     }
 
@@ -167,7 +173,7 @@ public class ImapDemoMessage extends StandardEntity {
         return messageUid;
     }
 
-    public void setFolderName(String folderName) {
+    private void setFolderName(String folderName) {
         this.folderName = folderName;
     }
 
@@ -175,7 +181,7 @@ public class ImapDemoMessage extends StandardEntity {
         return folderName;
     }
 
-    public void setMailBox(ImapMailBox mailBox) {
+    private void setMailBox(ImapMailBox mailBox) {
         this.mailBox = mailBox;
     }
 
