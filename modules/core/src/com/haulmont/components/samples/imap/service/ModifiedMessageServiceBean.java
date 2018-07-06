@@ -10,6 +10,7 @@ import com.haulmont.cuba.core.Transaction;
 import com.haulmont.cuba.security.app.Authentication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 
 import javax.inject.Inject;
@@ -28,6 +29,7 @@ public class ModifiedMessageServiceBean implements ModifiedMessageService {
     @Inject
     private ImapAPI imapAPI;
 
+    @EventListener
     public void handleEvent(EmailFlagChangedImapEvent event) {
         log.info("handle event :{}", event);
         ImapMessage message = event.getMessage();
