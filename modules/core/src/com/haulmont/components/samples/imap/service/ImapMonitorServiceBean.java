@@ -9,8 +9,8 @@ import org.springframework.stereotype.Service;
 
 
 @Service(ImapMonitorService.NAME)
-public class StubImapMonitorServiceBean implements ImapMonitorService {
-    private final static Logger log = LoggerFactory.getLogger(StubImapMonitorServiceBean.class);
+public class ImapMonitorServiceBean implements ImapMonitorService {
+    private final static Logger log = LoggerFactory.getLogger(ImapMonitorServiceBean.class);
 
     @Override
     public void onChange(EmailFlagChangedImapEvent event) {

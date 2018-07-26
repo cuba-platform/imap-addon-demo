@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.cubaVersion = '6.8.6'
+    ext.cubaVersion = '6.9.3'
     repositories {
         mavenLocal()
         
@@ -20,10 +20,9 @@ buildscript {
 
 def globalModule = project(':imapSample-global')
 def coreModule = project(':imapSample-core')
-def guiModule = project(':imapSample-gui')
 def webModule = project(':imapSample-web')
 
-def servletApi = 'org.apache.tomcat:tomcat-servlet-api:8.0.26'
+def servletApi = 'javax.servlet:javax.servlet-api:3.1.0'
 
 
 apply(plugin: 'idea')
@@ -45,9 +44,9 @@ dependencies {
 
 }
 
-def postgres = 'org.postgresql:postgresql:9.4.1212'
+def hsql = 'org.hsqldb:hsqldb:2.2.9'
 
-configure([globalModule, coreModule, guiModule, webModule]) {
+configure([globalModule, coreModule, webModule]) {
     apply(plugin: 'java')
     apply(plugin: 'maven')
     apply(plugin: 'idea')
@@ -102,8 +101,8 @@ configure(coreModule) {
     dependencies {
         compile(globalModule)
         provided(servletApi)
-        jdbc(postgres)
-        testRuntime(postgres)
+        jdbc(hsql)
+        testRuntime(hsql)
 
     }
 
@@ -124,34 +123,22 @@ configure(coreModule) {
     }
 
     task createDb(dependsOn: assembleDbScripts, description: 'Creates local database', type: CubaDbCreation) {
-        dbms = 'postgres'
-        host = 'localhost:32768'
-        dbName = 'haulmont-imap'
-        dbUser = 'postgres'
-        dbPassword = 'postgres'
+        dbms = 'hsql'
+        host = 'localhost'
+        dbName = 'imapsample'
+        dbUser = 'sa'
+        dbPassword = ''
     }
 
     task updateDb(dependsOn: assembleDbScripts, description: 'Updates local database', type: CubaDbUpdate) {
-        dbms = 'postgres'
-        host = 'localhost:32768'
-        dbName = 'haulmont-imap'
-        dbUser = 'postgres'
-        dbPassword = 'postgres'
+        dbms = 'hsql'
+        host = 'localhost'
+        dbName = 'imapsample'
+        dbUser = 'sa'
+        dbPassword = ''
     }
 }
 
-configure(guiModule) {
-    dependencies {
-        compile(globalModule)
-
-    }
-
-    task deployConf(type: Copy) {
-        from file('src')
-        include "com/haulmont/components/samples/imap/**"
-        into "$cuba.tomcat.dir/conf/imapSample"
-    }
-}
 
 configure(webModule) {
     configurations {
@@ -160,7 +147,7 @@ configure(webModule) {
 
     dependencies {
         provided(servletApi)
-        compile(guiModule)
+        compile(globalModule)
 
     }
     
@@ -198,7 +185,7 @@ configure(webModule) {
 
     task deploy(dependsOn: [assemble, cleanConf], type: CubaDeployment) {
         appName = 'imapSample'
-        appJars('imapSample-global', 'imapSample-gui', 'imapSample-web')
+        appJars('imapSample-global', 'imapSample-web')
     }
 }
 
@@ -226,5 +213,3 @@ task restart(dependsOn: ['stop', ':imapSample-core:deploy', ':imapSample-web:dep
 task wrapper(type: Wrapper) {
     gradleVersion = '4.3.1'
 }
-
-apply from: 'extra.gradle'

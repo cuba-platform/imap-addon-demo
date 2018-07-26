@@ -31,7 +31,7 @@ import java.util.*;
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
-@Component("demo_SimpleSingleFolderNewMessagesEventsGenerator")
+@Component("imapsample_SimpleSingleFolderNewMessagesEventsGenerator")
 public class SimpleSingleFolderNewMessagesEventsGenerator implements ImapEventsGenerator {
 
     private final static Logger log = LoggerFactory.getLogger(SimpleSingleFolderNewMessagesEventsGenerator.class);
