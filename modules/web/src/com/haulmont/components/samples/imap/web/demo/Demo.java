@@ -176,11 +176,11 @@ public class Demo extends AbstractWindow {
                     newMessage.setSeenTime(timeSource.currentTimestamp());
                     dm.commit(new CommitContext(newMessage));
                     uiAccessor.access(() ->
-                        showNotification(
-                                "New message arrived",
-                                String.format("%s from %s", newMessage.getSubject(), newMessage.getFrom()),
-                                NotificationType.TRAY
-                        )
+                            showNotification(
+                                    "New message arrived",
+                                    String.format("%s from %s", newMessage.getSubject(), newMessage.getFrom()),
+                                    NotificationType.TRAY
+                            )
                     );
                 }
 

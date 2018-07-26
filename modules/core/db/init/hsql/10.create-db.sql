@@ -1,6 +1,6 @@
 -- begin IMAPSAMPLE_IMAP_DEMO_MESSAGE
 create table IMAPSAMPLE_IMAP_DEMO_MESSAGE (
-    ID uuid,
+    ID varchar(36) not null,
     VERSION integer not null,
     CREATE_TS timestamp,
     CREATED_BY varchar(50),
@@ -11,17 +11,17 @@ create table IMAPSAMPLE_IMAP_DEMO_MESSAGE (
     --
     SEEN boolean,
     FROM_ varchar(255),
-    TO_LIST text,
-    CC_LIST text,
-    BCC_LIST text,
+    TO_LIST longvarchar,
+    CC_LIST longvarchar,
+    BCC_LIST longvarchar,
     SUBJECT varchar(255),
     FLAGS_LIST varchar(255),
     DATE_ timestamp,
     SEEN_TIME timestamp,
     MESSAGE_UID bigint not null,
     FOLDER_NAME varchar(255) not null,
-    MAIL_BOX_ID uuid,
-    IMAP_MESSAGE_ID uuid not null,
+    MAIL_BOX_ID varchar(36),
+    IMAP_MESSAGE_ID varchar(36) not null,
     --
     primary key (ID)
 )^

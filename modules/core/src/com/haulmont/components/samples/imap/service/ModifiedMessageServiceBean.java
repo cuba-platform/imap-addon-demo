@@ -57,11 +57,6 @@ public class ModifiedMessageServiceBean implements ModifiedMessageService {
         }
     }
 
-    /*@Override
-    public void handleAnyEvent(BaseImapEvent event) {
-        log.info("handle some event {}", event);
-    }*/
-
     @Override
     public void logEvent(EmailFlagChangedImapEvent event) {
         log.info("get flags event {}", event);
