@@ -143,7 +143,7 @@ public class Demo extends AbstractWindow {
 
     public void moveToFolder() {
         String folderName = folderField.getValue();
-        if (folderName == null) {
+        if (StringUtils.isEmpty(folderName)) {
             return;
         }
         forEachSelected(pair -> {
@@ -224,10 +224,7 @@ public class Demo extends AbstractWindow {
             String[] flagsArray = d.split(",");
             Collections.addAll(flags, flagsArray);
         }
-        flagField.setSearchExecutor((searchString, searchParams) ->
-                flags.stream()
-                        .filter(str -> StringUtils.containsIgnoreCase(str, searchString))
-                        .collect(Collectors.toList()));
+        flagField.setSearchExecutor(searchExecutor(flags));
     }
 
     // Sets the list of all available folders as the options for the "Move to folder" SuggestionField
@@ -236,10 +233,16 @@ public class Demo extends AbstractWindow {
         for (ImapDemoMessage message : getImapDemoMessageList()) {
             folders.add(message.getFolderName());
         }
-        folderField.setSearchExecutor((searchString, searchParams) ->
-                folders.stream()
-                        .filter(str -> StringUtils.containsIgnoreCase(str, searchString))
-                        .collect(Collectors.toList()));
+        folderField.setSearchExecutor(searchExecutor(folders));
+    }
+
+    private SuggestionField.SearchExecutor<String> searchExecutor(Collection<String> source) {
+        return (searchString, searchParams) -> {
+            List<String> suggested = source.stream()
+                    .filter(str -> StringUtils.containsIgnoreCase(str, searchString))
+                    .collect(Collectors.toList());
+            return suggested.isEmpty() ? Collections.singletonList(searchString) : suggested;
+        };
     }
 
     // Returns the list of all messages from all mailboxes
