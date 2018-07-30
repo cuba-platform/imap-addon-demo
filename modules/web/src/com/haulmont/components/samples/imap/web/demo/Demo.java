@@ -188,10 +188,6 @@ public class Demo extends AbstractWindow {
                                     NotificationType.TRAY
                             )
                     );
-                } else {
-                    uiAccessor.access(() ->
-                        showNotification("Now new messages found", NotificationType.TRAY)
-                    );
                 }
                 return null;
             }
