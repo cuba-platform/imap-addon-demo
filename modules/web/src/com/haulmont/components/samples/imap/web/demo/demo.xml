@@ -16,21 +16,24 @@
     </dsContext>
     <layout expand="imapDemoMessageTable"
             spacing="true">
-
-        <hbox caption="msg://setCustomFlagCaption"
-              spacing="true">
-            <textField id="flagNameField"/>
+        <groupBox caption="msg://setCustomFlagCaption"
+                  orientation="horizontal"
+                  spacing="true"
+                  width="AUTO">
+            <suggestionField id="flagField"/>
             <button caption="msg://setFlagButtonCaption"
                     invoke="setFlag"/>
             <button caption="msg://unsetFlagButtonCaption"
                     invoke="unsetFlag"/>
-        </hbox>
-        <hbox caption="msg://moveToFolderCaption"
-              spacing="true">
-            <textField id="folderNameField"/>
+        </groupBox>
+        <groupBox caption="msg://moveToFolderCaption"
+                  orientation="horizontal"
+                  spacing="true"
+                  width="AUTO">
+            <suggestionField id="folderField"/>
             <button caption="msg://moveToFolderCaption"
                     invoke="moveToFolder"/>
-        </hbox>
+        </groupBox>
         <table id="imapDemoMessageTable"
                width="100%">
             <actions>
@@ -59,7 +62,7 @@
             <rowsCount/>
             <buttonsPanel>
                 <button caption="msg://checkNewMessage"
-                        invoke="showNewMessage"/>
+                        invoke="showNewMessages"/>
                 <button action="imapDemoMessageTable.deleteMessageAction"/>
                 <button action="imapDemoMessageTable.markAsReadAction"/>
                 <button action="imapDemoMessageTable.markAsImportantAction"/>
