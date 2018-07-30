@@ -189,7 +189,9 @@ public class Demo extends AbstractWindow {
                             )
                     );
                 } else {
-                    showNotification("Now new messages found", NotificationType.TRAY);
+                    uiAccessor.access(() ->
+                        showNotification("Now new messages found", NotificationType.TRAY)
+                    );
                 }
                 return null;
             }
