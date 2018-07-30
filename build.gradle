@@ -77,7 +77,7 @@ configure([globalModule, coreModule, webModule]) {
         ignoreFailures = false
     }
 
-    checkstyleMain << {
+    checkstyleMain.doLast {
         def checkstyleDir = "${project.buildDir}/checkstyle".toString()
         ant.xslt('in': "$checkstyleDir/main.xml",
                 out: "$checkstyleDir/$project.name-checkstyle.html",
