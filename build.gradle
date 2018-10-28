@@ -1,6 +1,6 @@
 
 buildscript {
-    ext.cubaVersion = '6.9.3'
+    ext.cubaVersion = '6.10.2'
     repositories {
         mavenLocal()
         
@@ -40,7 +40,7 @@ cuba {
 }
 
 dependencies {
-    appComponent("com.haulmont.addon.imap:imap-global:0.1-SNAPSHOT")
+    appComponent("com.haulmont.addon.imap:imap-global:1.1-SNAPSHOT")
 
 }
 
@@ -86,7 +86,9 @@ configure([globalModule, coreModule, webModule]) {
 }
 
 configure(globalModule) {
-    task enhance(type: CubaEnhancing)
+    entitiesEnhancing {
+        main { enabled = true }
+    }
 
     
 }
