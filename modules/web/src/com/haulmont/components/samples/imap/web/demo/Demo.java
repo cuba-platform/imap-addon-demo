@@ -18,7 +18,7 @@ import com.haulmont.cuba.gui.components.Timer;
 import com.haulmont.cuba.gui.data.CollectionDatasource;
 import com.haulmont.cuba.gui.executors.*;
 import com.haulmont.cuba.gui.xml.layout.ComponentsFactory;
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import javax.inject.Inject;
 import java.util.*;
@@ -50,10 +50,10 @@ public class Demo extends AbstractWindow {
     private Table<ImapDemoMessage> imapDemoMessageTable;
 
     @Inject
-    private SuggestionField flagField;
+    private SuggestionField<String> flagField;
 
     @Inject
-    private SuggestionField folderField;
+    private SuggestionField<String> folderField;
 
     @Override
     public void init(Map<String, Object> params) {

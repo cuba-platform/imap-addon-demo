@@ -1,5 +1,6 @@
 rootProject.name = 'imapSample'
-include(':imapSample-global', ':imapSample-core', ':imapSample-web')
-project(':imapSample-global').projectDir = new File(settingsDir, 'modules/global')
-project(':imapSample-core').projectDir = new File(settingsDir, 'modules/core')
-project(':imapSample-web').projectDir = new File(settingsDir, 'modules/web')
+def modulePrefix = 'imapSample'
+include(":${modulePrefix}-global" , ":${modulePrefix}-core" , ":${modulePrefix}-web" )
+project(":${modulePrefix}-global" ).projectDir = new File(settingsDir, 'modules/global')
+project(":${modulePrefix}-core" ).projectDir = new File(settingsDir, 'modules/core')
+project(":${modulePrefix}-web" ).projectDir = new File(settingsDir, 'modules/web')
