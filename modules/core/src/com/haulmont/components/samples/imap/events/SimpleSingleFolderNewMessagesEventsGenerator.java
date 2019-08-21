@@ -3,13 +3,18 @@ package com.haulmont.components.samples.imap.events;
 import com.haulmont.addon.imap.api.ImapEventsGenerator;
 import com.haulmont.addon.imap.core.ImapHelper;
 import com.haulmont.addon.imap.core.ImapOperations;
-import com.haulmont.addon.imap.entity.*;
-import com.haulmont.addon.imap.events.*;
+import com.haulmont.addon.imap.entity.ImapFolder;
+import com.haulmont.addon.imap.entity.ImapMailBox;
+import com.haulmont.addon.imap.entity.ImapMessage;
+import com.haulmont.addon.imap.events.BaseImapEvent;
+import com.haulmont.addon.imap.events.NewEmailImapEvent;
 import com.haulmont.addon.imap.exception.ImapException;
 import com.haulmont.bali.datastruct.Pair;
 import com.haulmont.cuba.core.EntityManager;
 import com.haulmont.cuba.core.Persistence;
 import com.haulmont.cuba.core.Transaction;
+import com.haulmont.cuba.core.global.AppBeans;
+import com.haulmont.cuba.core.global.Metadata;
 import com.haulmont.cuba.security.app.Authentication;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.imap.IMAPMessage;
@@ -43,6 +48,7 @@ public class SimpleSingleFolderNewMessagesEventsGenerator implements ImapEventsG
 
     private final ExecutorService executor = Executors.newCachedThreadPool(new ThreadFactory() {
         private final AtomicInteger threadNumber = new AtomicInteger(1);
+
         @Override
         public Thread newThread(@Nonnull Runnable r) {
             Thread thread = new Thread(
@@ -104,8 +110,8 @@ public class SimpleSingleFolderNewMessagesEventsGenerator implements ImapEventsG
             imapFolder.open(Folder.READ_ONLY);
 
 
-            subscriptions.put( mailBoxId, executor.submit(() -> subscribe(cubaFolder, imapFolder)) );
-            releaseActions.put( mailBoxId, () -> {
+            subscriptions.put(mailBoxId, executor.submit(() -> subscribe(cubaFolder, imapFolder)));
+            releaseActions.put(mailBoxId, () -> {
                 try {
                     store.close();
                 } catch (MessagingException e) {
@@ -156,7 +162,8 @@ public class SimpleSingleFolderNewMessagesEventsGenerator implements ImapEventsG
                         for (Message msg : e.getMessages()) {
                             authentication.begin();
                             try (Transaction tx = persistence.createTransaction()) {
-                                ImapMessage cubaMessage = imapOperations.map((IMAPMessage) msg, folder);
+                                ImapMessage imapMessage = AppBeans.get(Metadata.class).create(ImapMessage.class);
+                                ImapMessage cubaMessage = imapOperations.map(imapMessage, (IMAPMessage) msg, folder);
                                 EntityManager em = persistence.getEntityManager();
                                 em.persist(cubaMessage);
 
