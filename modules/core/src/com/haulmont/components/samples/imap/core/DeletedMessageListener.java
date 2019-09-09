@@ -53,7 +53,7 @@ public class DeletedMessageListener {
                     ImapDemoMessage.class
             )
                     .setParameter("uid", message.getMsgUid())
-                    .setParameter("mailBoxId", message.getFolder().getMailBox())
+                    .setParameter("mailBoxId", message.getFolder().getMailBox().getId())
                     .executeUpdate();
 
             tx.commit();
