@@ -2,8 +2,8 @@ package com.haulmont.components.samples.imap.core;
 
 import com.haulmont.addon.imap.api.ImapAPI;
 import com.haulmont.addon.imap.dto.ImapMessageDto;
-import com.haulmont.addon.imap.entity.ImapMessage;
 import com.haulmont.addon.imap.entity.ImapMailBox;
+import com.haulmont.addon.imap.entity.ImapMessage;
 import com.haulmont.addon.imap.events.EmailAnsweredImapEvent;
 import com.haulmont.addon.imap.events.NewEmailImapEvent;
 import com.haulmont.components.samples.imap.entity.ImapDemoMessage;
@@ -17,7 +17,7 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.inject.Inject;
-import java.util.*;
+import java.util.UUID;
 
 @Component
 public class NewMessageListener {
@@ -45,7 +45,7 @@ public class NewMessageListener {
                     "select m from imapsample$ImapDemoMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId"
             )
                     .setParameter("uid", event.getMessageId())
-                    .setParameter("mailBoxId", event.getMessage().getFolder().getMailBox())
+                    .setParameter("mailBoxId", event.getMessage().getFolder().getMailBox().getId())
                     .getResultList()
                     .size();
             if (sameUIDs == 0) {

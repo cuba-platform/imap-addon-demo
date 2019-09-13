@@ -41,7 +41,7 @@ public class ModifiedMessageServiceBean implements ModifiedMessageService {
                     ImapDemoMessage.class
             )
                     .setParameter("uid", message.getMsgUid())
-                    .setParameter("mailBoxId", message.getFolder().getMailBox())
+                    .setParameter("mailBoxId", message.getFolder().getMailBox().getId())
                     .getFirstResult();
 
             if (msg == null) {
