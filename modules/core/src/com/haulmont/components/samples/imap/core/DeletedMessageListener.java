@@ -53,7 +53,9 @@ public class DeletedMessageListener {
                     .setParameter("uid", message.getMsgUid())
                     .setParameter("mailBoxId", message.getFolder().getMailBox().getId())
                     .getFirstResult();
-            em.remove(imapDemoMessage);
+            if (imapDemoMessage!=null){
+                em.remove(imapDemoMessage);
+            }
             tx.commit();
         } finally {
             authentication.end();
