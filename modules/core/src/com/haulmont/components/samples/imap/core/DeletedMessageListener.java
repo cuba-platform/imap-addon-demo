@@ -49,11 +49,11 @@ public class DeletedMessageListener {
         try (Transaction tx = persistence.createTransaction()) {
 
             EntityManager em = persistence.getEntityManager();
-            ImapDemoMessage imapDemoMessage = em.createQuery("select m from imapsample$ImapDemoMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId",ImapDemoMessage.class)
+            ImapDemoMessage imapDemoMessage = em.createQuery("select m from imapsample$ImapDemoMessage m where m.messageUid = :uid and m.mailBox.id = :mailBoxId", ImapDemoMessage.class)
                     .setParameter("uid", message.getMsgUid())
                     .setParameter("mailBoxId", message.getFolder().getMailBox().getId())
                     .getFirstResult();
-            if (imapDemoMessage!=null){
+            if (imapDemoMessage != null) {
                 em.remove(imapDemoMessage);
             }
             tx.commit();
